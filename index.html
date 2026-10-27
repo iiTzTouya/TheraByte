@@ -228,6 +228,13 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 
 .guide-step { display: flex; gap: 16px; padding: 18px 0; border-bottom: 1px solid rgb(var(--border)); }
 .guide-step:last-child { border-bottom: none; }
+.guide-pic { width: 132px; flex-shrink: 0; margin: 0; }
+.guide-pic svg { width: 100%; height: auto; display: block; border-radius: 10px; background: rgb(var(--surface-2)); border: 1px solid rgb(var(--border)); }
+.guide-pic figcaption { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #2E7D32; margin-top: 6px; text-align: center; }
+.pk { fill: rgb(var(--surface)); stroke: rgb(var(--border-strong)); stroke-width: 2; stroke-linejoin: round; }
+.pl { fill: none; stroke: rgb(var(--border-strong)); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pt { fill: none; stroke: rgb(var(--border-strong)); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+@media (max-width: 520px) { .guide-step { flex-wrap: wrap; } .guide-pic { width: 100%; max-width: 200px; margin-left: 42px; } }
 .guide-num { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, #4CAF50, #2E7D32); color: white; display: grid; place-items: center; font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 12px; flex-shrink: 0; }
 
 .settings-tab { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .22s var(--ease-out-expo); color: rgb(var(--muted)); background: transparent; border: none; }
@@ -519,10 +526,13 @@ function debouncedRerender(selector, delay = 180) {
   _searchTimers[selector] = setTimeout(() => rerenderKeepingFocus(selector), delay);
 }
 function avatar(u, size=40){
-  const isMe = State.user && State.user.id === u.id;
-  const mySaved = isMe && State.savedAvatar && State.savedAvatar.userId === u.id ? State.savedAvatar.dataUrl : null;
-  const src = mySaved || u.avatar;
-  return `<img src="${src}" alt="${esc(u.name)}" loading="lazy" decoding="async" class="rounded-full object-cover shrink-0 bg-black/5" style="width:${size}px;height:${size}px" onerror="this.onerror=null;this.src='https://i.pravatar.cc/150?u=${u.id}'">`;
+  /* Profiles start blank. A picture only appears once the person picks one themselves. */
+  const src = u && u.photo;
+  if (src && /^data:image\//.test(src)) {
+    return `<img src="${src}" alt="${esc(u.name)}" decoding="async" class="rounded-full object-cover shrink-0 bg-black/5" style="width:${size}px;height:${size}px">`;
+  }
+  const ini = String((u && u.name) || '').replace(/^(Dr\.?|Mr\.?|Ms\.?|Mrs\.?)\s+/i, '').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  return `<span role="img" aria-label="${esc((u && u.name) || 'No photo')} (no photo yet)" class="rounded-full shrink-0 grid place-items-center overflow-hidden bg-[rgb(var(--surface-2))] border border-[rgb(var(--border))] text-[rgb(var(--muted))]" style="width:${size}px;height:${size}px"><svg viewBox="0 0 24 24" width="${Math.round(size*0.62)}" height="${Math.round(size*0.62)}" fill="currentColor" aria-hidden="true" style="opacity:.55"><circle cx="12" cy="8.5" r="4.2"/><path d="M3.5 21c.6-4.6 4-7 8.5-7s7.9 2.4 8.5 7z"/></svg></span>`;
 }
 function icon(n, s=18, c=''){ return `<i data-lucide="${n}" class="${c}" style="width:${s}px;height:${s}px"></i>`; }
 function iconEl(){ if (window.lucide) lucide.createIcons(); }
@@ -735,9 +745,9 @@ const SEED_CONVERSATIONS = [
   ]},
 ];
 const SEED_NOTIFICATIONS = [
-  { id:'n1', type:'appointment', title:'Appointment reminder', body:'Alex Rivera · Relaxation Massage, today at 10:00 AM', at:dOffset(0,8,0).toISOString(), read:false, action:'view', actionLabel:'View', link:'#/app/appointments/ap1' },
-  { id:'n2', type:'message', title:'New message from Jamie', body:'Thank you. See you then.', at:dOffset(-1,11,0).toISOString(), read:false, action:'reply', actionLabel:'Reply', link:'#/app/messages/cv2' },
-  { id:'n5', type:'appointment', title:'New appointment request', body:'Aria Lopez · Relaxation Massage', at:dOffset(-2,14,0).toISOString(), read:false, action:'confirm', actionLabel:'Confirm', apptId:'ap6' },
+  { id:'n1', type:'appointment', title:'Appointment reminder', body:'Alex Rivera · Relaxation Massage, today at 10:00 AM', at:dOffset(0,8,0).toISOString(), read:false, action:'view', actionLabel:'View', link:'#/app/appointments/ap1', to:'p1' },
+  { id:'n2', type:'message', title:'New message from Jamie', body:'Thank you. See you then.', at:dOffset(-1,11,0).toISOString(), read:false, action:'reply', actionLabel:'Reply', link:'#/app/messages/cv2', to:'p1' },
+  { id:'n5', type:'appointment', title:'New appointment request', body:'Aria Lopez · Relaxation Massage', at:dOffset(-2,14,0).toISOString(), read:false, action:'confirm', actionLabel:'Confirm', apptId:'ap6', to:'p1' },
 ];
 const SEED_REVIEWS = [
   { id:'r1', appt:'ap8', client:'c1', practitioner:'p1', rating:5, comment:'Very skilled. I felt noticeably lighter afterward.', date:dOffset(-2,12,0).toISOString() },
@@ -851,48 +861,110 @@ const BODY_PACKS = [
 ];
 const GUIDES = {
   neck: { title:'Neck release', duration:'3 minutes', intro:'For stiffness after long hours at a screen.', steps:[
-    { t:'Warm up', d:'Sit tall. Roll your shoulders back 5 times, then forward 5 times.' },
-    { t:'Side stretch', d:'Tilt your head toward your right shoulder. Hold 20 seconds. Switch sides.' },
-    { t:'Chin tuck', d:'Pull your chin straight back, as if making a double chin. Hold 5 seconds. Repeat 8 times.' },
-    { t:'Self-massage', d:'Press along the base of your skull with your fingertips. Small circles for 30 seconds.' },
+    { t:'Warm up', d:'Sit tall. Roll your shoulders back 5 times, then forward 5 times.', pic:'bust-roll' },
+    { t:'Side stretch', d:'Tilt your head toward your right shoulder. Hold 20 seconds. Switch sides.', pic:'bust-tilt' },
+    { t:'Chin tuck', d:'Pull your chin straight back, as if making a double chin. Hold 5 seconds. Repeat 8 times.', pic:'side-tuck' },
+    { t:'Self-massage', d:'Press along the base of your skull with your fingertips. Small circles for 30 seconds.', pic:'side-skull' },
   ]},
   shoulders: { title:'Shoulder knots', duration:'5 minutes', intro:'For tight trapezius and tension between the shoulder blades.', steps:[
-    { t:'Find the knot', d:'Reach your right hand over your left shoulder. Feel for the tight band at the top.' },
-    { t:'Press and hold', d:'Press firmly with your thumb or knuckles. Hold 20 to 30 seconds. Breathe.' },
-    { t:'Move slowly', d:'Work along the muscle, pressing wherever it feels tight. One minute per side.' },
-    { t:'Stretch', d:'Cross your arm across your chest. Pull gently with the other arm. Hold 30 seconds each side.' },
+    { t:'Find the knot', d:'Reach your right hand over your left shoulder. Feel for the tight band at the top.', pic:'bust-find' },
+    { t:'Press and hold', d:'Press firmly with your thumb or knuckles. Hold 20 to 30 seconds. Breathe.', pic:'bust-press' },
+    { t:'Move slowly', d:'Work along the muscle, pressing wherever it feels tight. One minute per side.', pic:'bust-stroke' },
+    { t:'Stretch', d:'Cross your arm across your chest. Pull gently with the other arm. Hold 30 seconds each side.', pic:'bust-cross' },
   ]},
   'lower-back': { title:'Lower back relief', duration:'4 minutes', intro:'For stiffness from sitting or long commutes.', steps:[
-    { t:'Cat-cow', d:'On all fours, alternate arching and rounding your back. Ten slow reps.' },
-    { t:"Child's pose", d:'Sit back on your heels, arms forward on the floor. Hold 30 seconds. Breathe deeply.' },
-    { t:'Knee to chest', d:'Lie on your back. Pull one knee toward your chest. Hold 20 seconds. Switch.' },
-    { t:'Self-massage', d:'Place two tennis balls in a sock. Lie on them on either side of your spine and roll gently.' },
+    { t:'Cat-cow', d:'On all fours, alternate arching and rounding your back. Ten slow reps.', pic:'quad' },
+    { t:"Child's pose", d:'Sit back on your heels, arms forward on the floor. Hold 30 seconds. Breathe deeply.', pic:'child' },
+    { t:'Knee to chest', d:'Lie on your back. Pull one knee toward your chest. Hold 20 seconds. Switch.', pic:'knee' },
+    { t:'Self-massage', d:'Place two tennis balls in a sock. Lie on them on either side of your spine and roll gently.', pic:'back-balls' },
   ]},
   head: { title:'Headache relief', duration:'3 minutes', intro:'For tension headaches and scalp tightness.', steps:[
-    { t:'Temple press', d:'Press both index fingers gently into your temples. Circle slowly for 30 seconds.' },
-    { t:'Scalp massage', d:'Use your fingertips to make small circles across your scalp. One minute.' },
-    { t:'Brow line', d:'Press along your eyebrows from center outward with your thumbs. Repeat 5 times.' },
-    { t:'Cool compress', d:'Rest a cool cloth over your eyes for 30 seconds.' },
+    { t:'Temple press', d:'Press both index fingers gently into your temples. Circle slowly for 30 seconds.', pic:'face-temples' },
+    { t:'Scalp massage', d:'Use your fingertips to make small circles across your scalp. One minute.', pic:'scalp' },
+    { t:'Brow line', d:'Press along your eyebrows from center outward with your thumbs. Repeat 5 times.', pic:'face-brow' },
+    { t:'Cool compress', d:'Rest a cool cloth over your eyes for 30 seconds.', pic:'face-cool' },
   ]},
   hands: { title:'Hand & wrist relief', duration:'3 minutes', intro:'For typing strain and wrist tightness.', steps:[
-    { t:'Palm press', d:'Press your thumb into the center of the opposite palm. Hold 20 seconds. Switch.' },
-    { t:'Wrist stretch', d:'Extend your arm, palm up. Pull fingers down gently with the other hand. Hold 20 seconds.' },
-    { t:'Finger spread', d:'Spread fingers wide, hold 3 seconds, then make a fist. Repeat 10 times.' },
-    { t:'Shake out', d:'Shake both hands loosely for 10 seconds.' },
+    { t:'Palm press', d:'Press your thumb into the center of the opposite palm. Hold 20 seconds. Switch.', pic:'hand-press' },
+    { t:'Wrist stretch', d:'Extend your arm, palm up. Pull fingers down gently with the other hand. Hold 20 seconds.', pic:'hand-wrist' },
+    { t:'Finger spread', d:'Spread fingers wide, hold 3 seconds, then make a fist. Repeat 10 times.', pic:'hand-spread' },
+    { t:'Shake out', d:'Shake both hands loosely for 10 seconds.', pic:'hand-shake' },
   ]},
   feet: { title:'Foot refresher', duration:'4 minutes', intro:'For tired feet after standing or long walks.', steps:[
-    { t:'Roll it out', d:'Roll each foot over a tennis ball for one minute.' },
-    { t:'Toe stretch', d:'Interlace your fingers between your toes. Rotate your ankle gently. 30 seconds each side.' },
-    { t:'Thumb press', d:'Press along the arch of the foot in small circles. 30 seconds.' },
-    { t:'Calf stretch', d:'Stand facing a wall. Step one foot back, heel down. Hold 20 seconds each side.' },
+    { t:'Roll it out', d:'Roll each foot over a tennis ball for one minute.', pic:'foot-roll' },
+    { t:'Toe stretch', d:'Interlace your fingers between your toes. Rotate your ankle gently. 30 seconds each side.', pic:'foot-ankle' },
+    { t:'Thumb press', d:'Press along the arch of the foot in small circles. 30 seconds.', pic:'foot-arch' },
+    { t:'Calf stretch', d:'Stand facing a wall. Step one foot back, heel down. Hold 20 seconds each side.', pic:'wall' },
   ]},
   calves: { title:'Calf release', duration:'3 minutes', intro:'For tight calves and post-run recovery.', steps:[
-    { t:'Wall stretch', d:'Push against a wall with one leg straight behind. Heel down. Hold 30 seconds each side.' },
-    { t:'Foam roll', d:'Roll your calf over a foam roller or bottle. One minute per leg.' },
-    { t:'Toe raises', d:'Rise onto your toes 15 times. Lower slowly.' },
+    { t:'Wall stretch', d:'Push against a wall with one leg straight behind. Heel down. Hold 30 seconds each side.', pic:'wall' },
+    { t:'Foam roll', d:'Roll your calf over a foam roller or bottle. One minute per leg.', pic:'calf-roll' },
+    { t:'Toe raises', d:'Rise onto your toes 15 times. Lower slowly.', pic:'calf-raise' },
   ]},
 };
 const GUIDE_AREAS = Object.keys(GUIDES);
+
+/* ============================================================
+   SELF-CARE PICTURES — pictograms of the massage technique
+   ============================================================ */
+const TECH_LABEL = { circles:'Circular friction', press:'Static pressure', stroke:'Gliding stroke', roll:'Ball / roller rolling', stretch:'Gentle stretch', move:'Easy movement', cool:'Cool compress' };
+let _picN = 0;
+const _G = '#2E7D32', _G2 = '#4CAF50';
+const _arrow = (d, w=3) => `<path d="${d}" fill="none" stroke="${_G2}" stroke-width="${w}" stroke-linecap="round" marker-end="url(#__AH__)"/>`;
+const _dArrow = (d) => `<path d="${d}" fill="none" stroke="${_G2}" stroke-width="3" stroke-linecap="round" marker-start="url(#__AH__)" marker-end="url(#__AH__)"/>`;
+const T = {
+  circles: (x, y, r=11) => `<circle cx="${x}" cy="${y}" r="${r+3}" fill="${_G2}" opacity=".16"/><circle cx="${x}" cy="${y}" r="3.2" fill="${_G}"/>${_arrow(`M${x+r} ${y} A${r} ${r} 0 1 1 ${x} ${y-r}`, 2.6)}`,
+  press: (x, y) => `<circle cx="${x}" cy="${y}" r="16" fill="${_G2}" opacity=".14"/><circle cx="${x}" cy="${y}" r="9" fill="${_G2}" opacity=".28"/><circle cx="${x}" cy="${y}" r="4.2" fill="${_G}"/>${_arrow(`M${x} ${y-30} L${x} ${y-12}`)}`,
+  stroke: (x1, y1, x2, y2) => `<circle cx="${x1}" cy="${y1}" r="4.2" fill="${_G}"/>${_arrow(`M${x1} ${y1} L${x2} ${y2}`, 3.4)}`,
+  roll: (x, y, vertical) => `<circle cx="${x}" cy="${y}" r="9" fill="${_G2}" stroke="${_G}" stroke-width="2"/>` + (vertical ? _dArrow(`M${x} ${y-26} L${x} ${y+26}`) : _dArrow(`M${x-30} ${y+20} L${x+30} ${y+20}`)),
+  move: (d) => _arrow(d),
+};
+const BASE = {
+  bust: () => `<path class="pk" d="M73 44 L73 62 L87 62 L87 44Z"/><path class="pk" d="M22 108 C24 80 52 68 73 63 L87 63 C108 68 136 80 138 108Z"/><circle class="pk" cx="80" cy="30" r="17"/>`,
+  side: () => `<path class="pk" d="M78 52 L78 82 L112 82 L112 60 C108 56 104 54 102 50Z"/><path class="pk" d="M20 108 C26 90 50 84 78 82 L112 82 C132 86 142 96 146 108Z"/><path class="pk" d="M58 34 C58 14 78 8 94 14 C108 20 112 38 104 50 C98 58 84 58 78 54 L72 52 C66 50 62 46 62 42 L54 38 L58 34Z"/>`,
+  face: () => `<ellipse class="pk" cx="49" cy="54" rx="4" ry="8"/><ellipse class="pk" cx="111" cy="54" rx="4" ry="8"/><ellipse class="pk" cx="80" cy="54" rx="30" ry="40"/><path class="pl" d="M62 41 Q69 37 76 41 M84 41 Q91 37 98 41 M80 52 L77 63 L83 63 M71 76 Q80 81 89 76"/><circle cx="69" cy="49" r="2" fill="rgb(var(--border-strong))"/><circle cx="91" cy="49" r="2" fill="rgb(var(--border-strong))"/>`,
+  scalp: () => `<ellipse class="pk" cx="42" cy="58" rx="5" ry="10"/><ellipse class="pk" cx="118" cy="58" rx="5" ry="10"/><circle class="pk" cx="80" cy="58" r="38"/><path class="pk" d="M71 22 Q80 8 89 22"/><path class="pl" stroke-dasharray="3 5" d="M80 28 L80 94"/>`,
+  back: () => `<path class="pk" d="M40 6 C32 40 38 72 44 104 L116 104 C122 72 128 40 120 6Z"/><path class="pl" stroke-dasharray="3 5" d="M80 8 L80 104"/><path class="pl" d="M52 20 Q62 40 72 32 M108 20 Q98 40 88 32"/>`,
+  hand: () => `<rect class="pk" x="54" y="20" width="11" height="48" rx="5.5"/><rect class="pk" x="66" y="12" width="11" height="56" rx="5.5"/><rect class="pk" x="78" y="16" width="11" height="52" rx="5.5"/><rect class="pk" x="90" y="28" width="11" height="42" rx="5.5"/><rect class="pk" x="52" y="50" width="52" height="54" rx="16"/><rect class="pk" x="22" y="58" width="38" height="12" rx="6" transform="rotate(-32 41 64)"/>`,
+  foot: () => `<path class="pk" d="M22 70 C22 54 34 48 44 46 L50 18 C52 8 70 8 72 18 L74 42 C96 46 124 52 140 68 C146 74 142 84 132 84 L34 84 C26 84 22 78 22 70Z"/><path class="pl" d="M10 102 L150 102"/>`,
+  calf: () => `<path class="pk" d="M58 6 L90 6 C90 24 96 40 92 58 C90 74 88 90 88 104 L68 104 C68 90 64 78 54 62 C46 48 52 26 58 6Z"/>`,
+};
+const PICS = {
+  'bust-roll':   { t:'move',   svg: () => BASE.bust() + _arrow('M42 82 A12 12 0 1 1 52 70') + _arrow('M118 82 A12 12 0 1 0 108 70') },
+  'bust-tilt':   { t:'stretch',svg: () => BASE.bust() + `<circle cx="80" cy="30" r="17" fill="none" stroke="${_G2}" stroke-dasharray="3 4" opacity=".6" transform="rotate(24 80 62)"/>` + _arrow('M96 8 Q122 14 124 40') },
+  'side-tuck':   { t:'stretch',svg: () => BASE.side() + _arrow('M30 36 L52 36', 3.4) },
+  'side-skull':  { t:'circles',svg: () => BASE.side() + T.circles(98, 50, 10) },
+  'bust-find':   { t:'press',  svg: () => BASE.bust() + T.press(52, 74) },
+  'bust-press':  { t:'press',  svg: () => BASE.bust() + T.press(50, 78) + T.press(110, 78) },
+  'bust-stroke': { t:'stroke', svg: () => BASE.bust() + T.stroke(36, 90, 66, 68) },
+  'bust-cross':  { t:'stretch',svg: () => BASE.bust() + `<path class="pt" d="M44 96 Q80 82 120 100"/>` + _arrow('M128 88 Q140 92 134 104', 3) },
+  'quad':        { t:'move',   svg: () => `<path class="pl" d="M8 98 L152 98"/><path class="pt" d="M46 56 Q82 44 118 56"/><path class="pt" d="M46 56 L46 94"/><path class="pt" d="M118 56 L118 94"/><circle class="pk" cx="32" cy="56" r="9"/>` + _arrow('M64 36 Q82 24 100 36') },
+  'child':       { t:'stretch',svg: () => `<path class="pl" d="M8 98 L152 98"/><path class="pt" d="M60 84 L106 74"/><circle class="pk" cx="112" cy="82" r="12"/><circle class="pk" cx="46" cy="88" r="8"/><path class="pt" d="M60 90 L20 94"/>` + _arrow('M30 62 L16 80') },
+  'knee':        { t:'stretch',svg: () => `<path class="pl" d="M8 98 L152 98"/><path class="pt" d="M30 90 L88 90"/><path class="pt" d="M88 90 L146 90"/><path class="pt" d="M88 90 L62 64 L86 50"/><circle class="pk" cx="22" cy="88" r="8"/>` + _arrow('M84 74 L66 62') },
+  'back-balls':  { t:'roll',   svg: () => BASE.back() + T.roll(64, 66, true) + T.roll(96, 66, true) },
+  'face-temples':{ t:'circles',svg: () => BASE.face() + T.circles(55, 42, 9) + T.circles(105, 42, 9) },
+  'scalp':       { t:'circles',svg: () => BASE.scalp() + T.circles(58, 46, 9) + T.circles(102, 46, 9) + T.circles(80, 74, 9) },
+  'face-brow':   { t:'stroke', svg: () => BASE.face() + T.stroke(79, 36, 56, 40) + T.stroke(81, 36, 104, 40) },
+  'face-cool':   { t:'cool',   svg: () => BASE.face() + `<rect x="55" y="36" width="50" height="20" rx="6" fill="#8EC5E8" opacity=".9" stroke="#3B8EC4" stroke-width="2"/><path d="M62 46 q4 -4 8 0 t8 0 t8 0 t8 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>` },
+  'hand-press':  { t:'press',  svg: () => BASE.hand() + T.press(78, 84) },
+  'hand-wrist':  { t:'stretch',svg: () => BASE.hand() + _arrow('M112 24 Q132 50 112 80') },
+  'hand-spread': { t:'move',   svg: () => BASE.hand() + _arrow('M50 28 L28 14', 3) + _arrow('M105 36 L132 24', 3) + _arrow('M72 8 L72 -', 3).replace('L72 -','L72 2') },
+  'hand-shake':  { t:'move',   svg: () => BASE.hand() + `<path d="M30 30 q-10 12 0 24 M20 24 q-12 18 0 36 M130 30 q10 12 0 24 M140 24 q12 18 0 36" fill="none" stroke="${_G2}" stroke-width="3" stroke-linecap="round"/>` },
+  'foot-roll':   { t:'roll',   svg: () => BASE.foot().replace('M10 102 L150 102','M10 103 L150 103') + `<circle cx="92" cy="93" r="9" fill="${_G2}" stroke="${_G}" stroke-width="2"/>` + _dArrow('M66 70 L118 70').replace('M66 70','M62 66') },
+  'foot-ankle':  { t:'move',   svg: () => BASE.foot() + T.circles(60, 52, 15) },
+  'foot-arch':   { t:'circles',svg: () => BASE.foot() + T.circles(96, 74, 10) },
+  'wall':        { t:'stretch',svg: () => `<path class="pl" d="M8 102 L150 102"/><rect x="130" y="6" width="10" height="96" rx="2" fill="rgb(var(--surface-2))" stroke="rgb(var(--border-strong))" stroke-width="2"/><circle class="pk" cx="112" cy="22" r="8"/><path class="pt" d="M108 32 L86 62"/><path class="pt" d="M86 62 L102 84 L104 100"/><path class="pt" d="M86 62 L42 98"/><path class="pt" d="M110 34 L128 42"/>` + _arrow('M34 78 L34 94') },
+  'calf-roll':   { t:'roll',   svg: () => BASE.calf() + T.roll(42, 56, true) },
+  'calf-raise':  { t:'move',   svg: () => `<path class="pl" d="M8 102 L150 102"/>` + BASE.calf() + _arrow('M78 84 L78 70') },
+};
+function GuidePic(key) {
+  const p = PICS[key];
+  if (!p) return '';
+  const id = 'ah' + (++_picN);
+  const inner = p.svg().replace(/__AH__/g, id);
+  return `<figure class="guide-pic"><svg viewBox="0 0 160 110" role="img" aria-label="Illustration: ${esc(TECH_LABEL[p.t])}"><defs><marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9z" fill="${_G2}"/></marker></defs>${inner}</svg><figcaption>${esc(TECH_LABEL[p.t])}</figcaption></figure>`;
+}
+window.GuidePic = GuidePic;
 const CAL_START_HOUR = 7;
 const CAL_END_HOUR = 20;
 
@@ -903,16 +975,22 @@ const State = {
   user: load(STORAGE_KEYS.USER_SESSION, null),
   theme: localStorage.getItem(STORAGE_KEYS.THEME) || 'system',
   calendarView: 'week', calendarDate: new Date(), settingsTab: 'profile',
-  savedAvatar: (() => {
-    const raw = localStorage.getItem(STORAGE_KEYS.AVATAR);
-    if (!raw) return null;
-    try { const p = JSON.parse(raw); if (p && p.userId && p.dataUrl) return p; return null; } catch(e) { return null; }
-  })(),
+  savedAvatar: null,
   timeOff: (() => { const t = load(STORAGE_KEYS.TIME_OFF, [{ id:'to1', start:addDays(new Date(),14).toISOString(), end:addDays(new Date(),17).toISOString(), reason:'Holiday break' }]); return t.slice().sort((a,b) => new Date(a.start) - new Date(b.start)); })(),
   schedulingRules: load(STORAGE_KEYS.SCHED_RULES, { bufferMinutes: 15, minNoticeHours: 2 }),
   apptSort:'upcoming', invoiceFilter:'all', apptFilter:'all',
   apptQuery:'', clientQuery:'', reviewOpen:null,
 };
+(function migrateLegacyAvatar() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.AVATAR);
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    const u = p && USERS.find(x => x.id === p.userId);
+    if (u && /^data:image\//.test(p.dataUrl || '')) { u.photo = p.dataUrl; if (State.user && State.user.id === u.id) State.user.photo = p.dataUrl; persist(STORAGE_KEYS.USERS, USERS); persist(STORAGE_KEYS.USER_SESSION, State.user); }
+    localStorage.removeItem(STORAGE_KEYS.AVATAR);
+  } catch (e) {}
+})();
 function persistSession() { persist(STORAGE_KEYS.USER_SESSION, State.user); }
 function saveTimeOff() { persist(STORAGE_KEYS.TIME_OFF, State.timeOff); }
 function set(p) { Object.assign(State, p); render(); }
@@ -1789,7 +1867,7 @@ function handleRegister(form) {
   if (!name || !email) { toast('Name and email are required', 'error'); return; }
   if (!password || password.length < 8) { toast('Password must be at least 8 characters', 'error'); return; }
   if (USERS.some(u => u.email.toLowerCase() === email)) { toast('An account with that email already exists', 'error'); return; }
-  const u = { id:'me-'+Date.now(), role, name, first:name.split(' ')[0], email, avatar:`https://i.pravatar.cc/150?u=${encodeURIComponent(email)}`, title:role==='practitioner'?'Practitioner':undefined, verified:false, joined:new Date().toISOString().slice(0,10), notifications:{ reminders:true, messages:true, focusAreas: role==='practitioner', product:false }, twoFactorEnabled:false };
+  const u = { id:'me-'+Date.now(), role, name, first:name.split(' ')[0], email, photo:null, title:role==='practitioner'?'Practitioner':undefined, verified:false, joined:new Date().toISOString().slice(0,10), notifications:{ reminders:true, messages:true, focusAreas: role==='practitioner', product:false }, twoFactorEnabled:false };
   USERS.push(u); saveAll(); resetBookingFlow(); set({ user: u }); persistSession(); toast(`Welcome, ${u.first}`);
   navigate(role === 'practitioner' ? '/onboard' : '/app/dashboard');
 }
@@ -1803,7 +1881,7 @@ let onboardStep = 0;
 function OnboardingPage() {
   const steps = [['About you','Your title and short bio'],['First service','What do you offer?'],['Your hours','When do you work?'],['All set',"You're ready to take bookings"]];
   function body() {
-    if (onboardStep === 0) return `<div class="space-y-4"><div><label class="type-small font-medium mb-1.5 block">Professional title</label><input id="onb-title" class="input" placeholder="e.g., Licensed Massage Therapist"></div><div><label class="type-small font-medium mb-1.5 block">Short bio</label><textarea id="onb-bio" class="input" rows="3" placeholder="Tell clients about your approach."></textarea></div><div><label class="type-small font-medium mb-1.5 block">Where do you practice?</label><input id="onb-loc" class="input" placeholder="City or studio name"></div></div>`;
+    if (onboardStep === 0) return `<div class="space-y-4"><div class="flex items-center gap-4"><div class="relative">${avatar(State.user || {name:''}, 64)}<label for="onb-photo" class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-brand-600 text-white grid place-items-center cursor-pointer shadow-lift hover:opacity-90 transition" title="Choose a profile photo">${icon('camera', 12)}</label><input id="onb-photo" type="file" accept="image/*" class="hidden" onchange="handlePhotoChange(this)"></div><div class="type-small muted">Add a profile photo (optional). You can change it any time in Settings.</div></div><div><label class="type-small font-medium mb-1.5 block">Professional title</label><input id="onb-title" class="input" placeholder="e.g., Licensed Massage Therapist"></div><div><label class="type-small font-medium mb-1.5 block">Short bio</label><textarea id="onb-bio" class="input" rows="3" placeholder="Tell clients about your approach."></textarea></div><div><label class="type-small font-medium mb-1.5 block">Where do you practice?</label><input id="onb-loc" class="input" placeholder="City or studio name"></div></div>`;
     if (onboardStep === 1) return `<div class="space-y-4"><div class="type-small muted">Add your first service.</div><div><label class="type-small font-medium mb-1.5 block">Service name</label><input id="onb-svc-name" class="input" placeholder="e.g., Relaxation Massage"></div><div class="grid grid-cols-2 gap-3"><div><label class="type-small font-medium mb-1.5 block">Duration (minutes)</label><input id="onb-svc-dur" type="number" class="input" value="60"></div><div><label class="type-small font-medium mb-1.5 block">Base price (₱)</label><input id="onb-svc-price" type="number" class="input" value="1200"></div></div></div>`;
     if (onboardStep === 2) return `<div class="space-y-3"><div class="type-small muted">Set your working hours.</div>${AVAILABILITY.map((d,i) => `<div class="flex items-center gap-3 p-3 surface-2 rounded-xl flex-wrap"><label class="flex items-center gap-2 flex-1 min-w-[120px]"><input type="checkbox" ${d.enabled?'checked':''} onchange="toggleDay(${i},this.checked)" class="rounded"><span class="type-small font-medium">${d.day}</span></label><input type="time" value="${d.start}" class="input !h-9 !w-28 !text-sm" onchange="AVAILABILITY[${i}].start=this.value;saveAll()"><span class="muted type-small">to</span><input type="time" value="${d.end}" class="input !h-9 !w-28 !text-sm" onchange="AVAILABILITY[${i}].end=this.value;saveAll()"></div>`).join('')}</div>`;
     return `<div class="text-center py-6"><div class="w-14 h-14 rounded-full grid place-items-center mx-auto mb-4 animate-pop" style="background:linear-gradient(135deg,#4CAF50,#2E7D32);color:white">${icon('check', 28)}</div><h3 class="type-h2 text-2xl">You're all set</h3><p class="type-small muted mt-2 max-w-sm mx-auto">Share your booking link with clients. They'll mark their focus areas before they arrive.</p><button onclick="finishOnboard()" class="btn btn-lg btn-primary mt-6">Go to dashboard</button></div>`;
@@ -1854,7 +1932,7 @@ function AppShell(page) {
   const nav = u.role === 'client' ? CLIENT_NAV : PRACTITIONER_NAV;
   const path = getRoute().path;
   const roleLabel = u.role === 'practitioner' ? 'Practitioner' : 'Client';
-  const unreadNotifs = NOTIFICATIONS.filter(n => !n.read).length;
+  const unreadNotifs = myNotifs().filter(n => !n.read).length;
   const unreadMsgs = CONVERSATIONS.filter(c => c.participants.includes(u.id) && c.unread).length;
   return `
   <div class="min-h-screen flex relative">
@@ -1899,7 +1977,7 @@ function AppShell(page) {
           </button>
           <div class="ml-auto md:ml-0 flex items-center gap-1 sm:gap-2">
             <div data-theme-toggle class="hidden sm:block"></div>
-            <a href="#/app/notifications" class="relative w-9 h-9 rounded-lg grid place-items-center hover:bg-[rgb(var(--surface-2))] transition" aria-label="Notifications">${icon('bell', 17)}${unreadNotifs ? '<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose2-500"></span>' : ''}</a>
+            <a href="#/app/notifications" class="relative w-9 h-9 rounded-lg grid place-items-center hover:bg-[rgb(var(--surface-2))] transition" aria-label="Notifications${unreadNotifs ? ' (' + unreadNotifs + ' unread)' : ''}">${icon('bell', 17)}${unreadNotifs ? `<span data-notif-badge class="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-rose2-500 text-white text-[10px] font-bold grid place-items-center animate-pop">${unreadNotifs > 9 ? '9+' : unreadNotifs}</span>` : ''}</a>
             <a href="#/app/messages" class="relative w-9 h-9 rounded-lg grid place-items-center hover:bg-[rgb(var(--surface-2))] transition" aria-label="Messages">${icon('message-circle', 17)}${unreadMsgs ? '<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full" style="background:#4CAF50"></span>' : ''}</a>
           </div>
         </div>
@@ -2433,7 +2511,7 @@ function sendRescheduleRequest(id) {
   a.rescheduledBy = State.user.id;
   a.rescheduledAt = new Date().toISOString();
   if (preferredDate) { const pd = parseLocalDate(preferredDate); if (pd) a.preferredDate = pd.toISOString(); }
-  NOTIFICATIONS.push({ id: 'n' + Date.now(), type:'appointment', title:'Reschedule request', body:`${getUser(a.client).first} requested a new time. Reason: ${reason}`, at:new Date().toISOString(), read:false, apptId: id, link:'#/app/appointments/' + id, action:'view', actionLabel:'View' });
+  notify({ to: (State.user && State.user.id === a.client) ? a.practitioner : a.client, id: 'n' + Date.now(), type:'appointment', title:'Reschedule request', body:`${getUser(a.client).first} requested a new time. Reason: ${reason}`, at:new Date().toISOString(), read:false, apptId: id, link:'#/app/appointments/' + id, action:'view', actionLabel:'View' });
   let c = CONVERSATIONS.find(x => x.participants.includes(a.client) && x.participants.includes(a.practitioner));
   if (!c) { c = { id:'cv'+Date.now(), participants:[a.client, a.practitioner], lastAt: new Date().toISOString(), unread:0, messages:[] }; CONVERSATIONS.push(c); }
   c.messages.push({ id:'m'+Date.now(), from: a.client, text: `Reschedule request${preferredDate ? ' for ' + fmtDate(preferredDate) : ''}: ${reason}`, at: new Date().toISOString(), read:false });
@@ -2446,7 +2524,7 @@ function sendReminder(apptId) {
   const a = getAppt(apptId);
   if (!a) return;
   const client = getUser(a.client);
-  NOTIFICATIONS.push({ id: 'n' + Date.now(), type:'appointment', title:'Reminder from your practitioner', body:`${esc(State.user.name)} sent a reminder for your appointment on ${fmtDate(a.start)} at ${fmtTime(a.start)}.`, at:new Date().toISOString(), read:false, link:'#/app/appointments/' + apptId, action:'view', actionLabel:'View' });
+  notify({ to: a.client, id: 'n' + Date.now(), type:'appointment', title:'Reminder from your practitioner', body:`${esc(State.user.name)} sent a reminder for your appointment on ${fmtDate(a.start)} at ${fmtTime(a.start)}.`, at:new Date().toISOString(), read:false, link:'#/app/appointments/' + apptId, action:'view', actionLabel:'View' });
   saveAll();
   toast(`Reminder sent to ${client.first}`);
 }
@@ -2689,7 +2767,7 @@ function PageGuides(areaId) {
       ${PageHeader({ backHref:'#/self-care', backLabel:'All guides', eyebrow:'Between sessions', title: g.title, description: g.intro })}
       <div class="flex items-center gap-4 -mt-4 mb-6 text-xs muted"><span class="flex items-center gap-1.5">${icon('clock', 11)} ${esc(g.duration)}</span><span class="flex items-center gap-1.5">${icon('map-pin', 11)} ${esc(area?.label || '')}</span></div>
       <div class="card p-5 flex justify-center mb-5">${BodyMapSVG([areaId])}</div>
-      <div class="card p-5 mb-5" data-stagger>${g.steps.map((s, i) => `<div class="guide-step"><div class="guide-num">${i+1}</div><div class="flex-1"><div class="type-small font-semibold">${esc(s.t)}</div><p class="type-small muted mt-1 leading-relaxed">${esc(s.d)}</p></div></div>`).join('')}</div>
+      <div class="card p-5 mb-5" data-stagger>${g.steps.map((s, i) => `<div class="guide-step"><div class="guide-num">${i+1}</div><div class="flex-1 min-w-0"><div class="type-small font-semibold">${esc(s.t)}</div><p class="type-small muted mt-1 leading-relaxed">${esc(s.d)}</p></div>${GuidePic(s.pic)}</div>`).join('')}</div>
       <div class="p-3 rounded-lg surface-2 text-xs muted flex items-start gap-2 mb-5">${icon('info', 11)}<span>General wellness routines. If pain persists or worsens, please see a qualified professional.</span></div>
       ${State.user && State.user.role === 'client' ? `<a href="#/app/book" class="btn btn-primary w-full">Book a session with a practitioner</a>` : ''}
     </div>`;
@@ -2925,7 +3003,7 @@ function markInvoicePaid(id) { const inv = INVOICES.find(i => i.id === id); if (
 window.markInvoicePaid = markInvoicePaid;
 
 function PageNotifications() {
-  const list = [...NOTIFICATIONS];
+  const list = myNotifs().sort((a, b) => new Date(b.at) - new Date(a.at));
   const card = (n) => {
     const ic = { appointment:'calendar-check', message:'message-circle', payment:'wallet', review:'star', invoice:'receipt', system:'info' }[n.type] || 'bell';
     return `<div class="list-row-static ${!n.read?'!bg-brand-500/5':''}">
@@ -2936,13 +3014,13 @@ function PageNotifications() {
           <div class="type-small muted mt-0.5 leading-relaxed">${esc(n.body)}</div>
           ${n.action && !n.actionTaken ? `<div class="flex flex-wrap gap-2 mt-3"><button onclick="handleNotification('${n.id}','${n.action}')" class="btn btn-sm btn-primary !min-h-[30px] !py-0 !px-3 !text-xs">${esc(n.actionLabel)}</button></div>` : n.actionTaken ? `<div class="text-xs muted mt-2 flex items-center gap-1.5">${icon('check', 11)} Done</div>` : ''}
         </div>
-        <div class="text-xs muted whitespace-nowrap">${relTime(n.at)}</div>
+        <div class="text-xs muted whitespace-nowrap" data-reltime="${esc(n.at)}">${relTime(n.at)}</div>
       </div>
     </div>`;
   };
   return `
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-    ${PageHeader({ backHref:'#/app/dashboard', backLabel:'Back', title:'Notifications', description:`${NOTIFICATIONS.filter(n=>!n.read).length} unread`, action: NOTIFICATIONS.some(n=>!n.read) ? `<button onclick="NOTIFICATIONS.forEach(n=>n.read=true);saveAll();toast('All marked as read');render()" class="btn btn-sm btn-outline">Mark all read</button>` : '' })}
+    ${PageHeader({ backHref:'#/app/dashboard', backLabel:'Back', title:'Notifications', description:`${list.filter(n=>!n.read).length} unread`, action: list.some(n=>!n.read) ? `<button onclick="markAllNotifsRead()" class="btn btn-sm btn-outline">Mark all read</button>` : '' })}
     ${list.length === 0 ? EmptyState({ icon:'bell-off', title:"You're all caught up", description:'New notifications will appear here.' }) : `<div class="list-container">${list.map(card).join('')}</div>`}
   </div>`;
 }
@@ -2968,7 +3046,7 @@ function PageSettings() {
   const isPractitioner = u.role === 'practitioner';
   const tab = State.settingsTab || 'profile';
   const notifPrefs = u.notifications || { reminders:true, messages:true, focusAreas: isPractitioner, product:false };
-  const hasSavedAvatar = State.savedAvatar && State.savedAvatar.userId === u.id;
+  const hasSavedAvatar = !!u.photo;
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: 'user' },
@@ -2985,7 +3063,7 @@ function PageSettings() {
         <div class="type-h3 text-[15px] mb-5">Your profile</div>
         <div class="flex items-center gap-5 mb-6">
           <div class="relative">${avatar(u, 72)}<label for="photo-input" class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-brand-600 text-white grid place-items-center cursor-pointer shadow-lift hover:opacity-90 transition">${icon('camera', 13)}</label><input id="photo-input" type="file" accept="image/*" class="hidden" onchange="handlePhotoChange(this)"></div>
-          <div><label for="photo-input" class="btn btn-sm btn-outline cursor-pointer inline-flex">${icon('upload', 12)} Change photo</label>${hasSavedAvatar ? `<button onclick="resetPhoto()" class="text-xs muted hover:text-red-600 ml-2">Reset</button>` : ''}<div class="text-xs muted mt-2">JPG or PNG · up to 5MB</div></div>
+          <div><label for="photo-input" class="btn btn-sm btn-outline cursor-pointer inline-flex">${icon('upload', 12)} ${hasSavedAvatar ? 'Change photo' : 'Choose photo'}</label>${hasSavedAvatar ? `<button onclick="resetPhoto()" class="text-xs muted hover:text-red-600 ml-2">Reset</button>` : ''}<div class="text-xs muted mt-2">${hasSavedAvatar ? 'JPG or PNG · up to 5MB' : 'No photo yet. Choose one so people recognise you.'}</div></div>
         </div>
         <div class="space-y-4">
           <div><label class="type-small font-medium mb-1.5 block">Full name</label><input class="input" value="${esc(u.name)}" onchange="saveProfileField('name', this.value)"></div>
@@ -3069,27 +3147,37 @@ function toggleTwoFactor(value) { if (!State.user) return; State.user.twoFactorE
 window.toggleTwoFactor = toggleTwoFactor;
 function saveProfileField(field, value) { if (!State.user) return; State.user[field] = value; const u = USERS.find(x => x.id === State.user.id); if (u) u[field] = value; saveAll(); persistSession(); toast('Saved'); }
 window.saveProfileField = saveProfileField;
+function setMyPhoto(dataUrl) {
+  if (!State.user) return;
+  State.user.photo = dataUrl;
+  const u = USERS.find(x => x.id === State.user.id);
+  if (u) u.photo = dataUrl;
+  saveAll(); persistSession();
+}
 function handlePhotoChange(input) {
   const file = input.files?.[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { toast('Photo too large (max 5MB)', 'error'); return; }
-  if (!file.type.startsWith('image/')) { toast('Please choose an image file', 'error'); return; }
+  if (file.size > 5 * 1024 * 1024) { toast('Photo too large (max 5MB)', 'error'); input.value = ''; return; }
+  if (!file.type.startsWith('image/')) { toast('Please choose an image file', 'error'); input.value = ''; return; }
   const reader = new FileReader();
+  reader.onerror = () => toast('Could not read that photo', 'error');
   reader.onload = (e) => {
-    const dataUrl = e.target.result;
-    State.savedAvatar = { userId: State.user.id, dataUrl };
-    localStorage.setItem(STORAGE_KEYS.AVATAR, JSON.stringify(State.savedAvatar));
-    if (State.user) {
-      State.user.avatar = dataUrl;
-      const u = USERS.find(x => x.id === State.user.id);
-      if (u) u.avatar = dataUrl;
-    }
-    saveAll(); persistSession(); toast('Photo updated'); render();
+    const img = new Image();
+    img.onerror = () => toast('That image could not be opened', 'error');
+    img.onload = () => {
+      /* Centre-crop to a square and shrink so it fits comfortably in local storage. */
+      const side = Math.min(img.width, img.height), N = 256;
+      const cv = document.createElement('canvas'); cv.width = cv.height = N;
+      cv.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, N, N);
+      setMyPhoto(cv.toDataURL('image/jpeg', 0.85));
+      toast('Photo updated'); render();
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 window.handlePhotoChange = handlePhotoChange;
-function resetPhoto() { State.savedAvatar = null; localStorage.removeItem(STORAGE_KEYS.AVATAR); toast('Photo reset'); render(); }
+function resetPhoto() { setMyPhoto(null); toast('Photo removed'); render(); }
 window.resetPhoto = resetPhoto;
 function exportData() {
   const data = { user: State.user, appointments: APPOINTMENTS, notes: NOTES, services: SERVICES, analytics: ANALYTICS.all() };
@@ -3369,7 +3457,7 @@ async function confirmBooking() {
       mode: p.consultation, location: p.location, areas: [...(bookState.areas || [])], ref,
       voucher: vt.voucher, discount: vt.discount,
     });
-    NOTIFICATIONS.push({ id: 'n' + Date.now(), type: 'appointment', title: 'New appointment request', body: `${State.user.name} · ${s.name} · ${fmtDate(d, {weekday:'short', month:'short', day:'numeric'})} at ${bookState.time}`, at: new Date().toISOString(), read: false, action: 'view', actionLabel: 'View', link: '#/app/appointments/' + newId });
+    notify({ to: p.id, id: 'n' + Date.now(), type: 'appointment', title: 'New appointment request', body: `${State.user.name} · ${s.name} · ${fmtDate(d, {weekday:'short', month:'short', day:'numeric'})} at ${bookState.time}`, at: new Date().toISOString(), read: false, action: 'view', actionLabel: 'View', link: '#/app/appointments/' + newId });
     saveAll();
     ANALYTICS.track('appointment_created', { service: s.id, practitioner: p.id, areas: (bookState.areas || []).length });
     if (vt.voucher) { const vv = VOUCHERS.find(x => x.code === vt.voucher); if (vv) { vv.used = (vv.used || 0) + 1; persist('tb-vouchers-v1', VOUCHERS); } }
@@ -3408,7 +3496,7 @@ function openCmdk() {
         <div class="relative flex items-center border-b border-[rgb(var(--border))]">
           <span class="absolute left-4 muted">${icon('search', 16)}</span>
           <input id="cmdk-input" class="w-full h-14 pl-12 pr-14 border-0 outline-none bg-transparent text-base" placeholder="Search or type a command…" autocomplete="off" spellcheck="false" aria-label="Search">
-          <kbd class="absolute right-4 text-[10px] muted px-1.5 py-0.5 rounded border border-[rgb(var(--border))] bg-[rgb(var(--surface-2))]">ESC</kbd>
+          <button type="button" onclick="closeCmdk()" class="absolute right-3 w-8 h-8 rounded-lg grid place-items-center muted hover:bg-[rgb(var(--surface-2))] hover:text-[rgb(var(--fg))] transition" aria-label="Close search" title="Close (Esc)">${icon('x', 16)}</button>
         </div>
         <div id="cmdk-results" class="max-h-[420px] overflow-y-auto py-2" role="listbox"></div>
       </div>
@@ -3690,6 +3778,75 @@ function attachRippleTracking() {
     btn.style.setProperty('--my', ((e.clientY - r.top) / r.height) * 100 + '%');
   }, { passive: true });
 }
+
+
+/* ============================================================
+   NOTIFICATIONS — per-recipient + real-time sync
+   ============================================================ */
+function myNotifs() {
+  const id = State.user && State.user.id;
+  return NOTIFICATIONS.filter(n => !n.to || n.to === id);
+}
+function notify(n) {
+  NOTIFICATIONS.push(n);
+  saveAll();
+  liveSync(true);
+}
+function markAllNotifsRead() {
+  myNotifs().forEach(n => n.read = true);
+  saveAll(); toast('All marked as read'); render();
+}
+window.markAllNotifsRead = markAllNotifsRead;
+window.notify = notify;
+
+const _live = { seen: null, sig: '' };
+function _liveSig() {
+  return [STORAGE_KEYS.NOTIFICATIONS, STORAGE_KEYS.CONVERSATIONS, STORAGE_KEYS.APPOINTMENTS]
+    .map(k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }).join('\u0001');
+}
+function _busyEditing() {
+  const a = document.activeElement;
+  const typing = a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.tagName === 'SELECT' || a.isContentEditable);
+  const modalOpen = !!(document.getElementById('modal-root') && document.getElementById('modal-root').firstElementChild);
+  return typing || modalOpen || cmdkOpen;
+}
+function _reloadShared() {
+  NOTIFICATIONS = load(STORAGE_KEYS.NOTIFICATIONS, NOTIFICATIONS);
+  CONVERSATIONS = load(STORAGE_KEYS.CONVERSATIONS, CONVERSATIONS);
+  APPOINTMENTS = load(STORAGE_KEYS.APPOINTMENTS, APPOINTMENTS);
+}
+/* Re-reads shared data, announces anything new for the signed-in user and refreshes the UI. */
+function liveSync(local) {
+  if (!State.user) { _live.seen = null; return; }
+  if (!local) _reloadShared();
+  const mine = myNotifs();
+  if (_live.seen === null) _live.seen = new Set(mine.map(n => n.id));
+  const fresh = mine.filter(n => !_live.seen.has(n.id) && !n.read);
+  mine.forEach(n => _live.seen.add(n.id));
+  fresh.slice(-3).forEach(n => toast(n.title + (n.body ? ' — ' + n.body : ''), 'info'));
+  _live.sig = _liveSig();
+  if (!_busyEditing()) render();
+  else {
+    const bell = document.querySelector('[data-notif-badge]');
+    const count = mine.filter(n => !n.read).length;
+    if (bell) bell.textContent = count > 9 ? '9+' : count;
+  }
+}
+window.addEventListener('storage', (e) => {
+  if (!e.key || [STORAGE_KEYS.NOTIFICATIONS, STORAGE_KEYS.CONVERSATIONS, STORAGE_KEYS.APPOINTMENTS].includes(e.key)) liveSync(false);
+});
+/* Fallback poll (storage events do not fire in the same tab, and some file:// browsers skip them). */
+setInterval(() => {
+  if (document.hidden || !State.user) return;
+  const sig = _liveSig();
+  if (sig !== _live.sig) { if (_live.sig) liveSync(false); else _live.sig = sig; }
+}, 2000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) liveSync(false); });
+/* Keep "5 min ago" labels fresh. */
+setInterval(() => {
+  document.querySelectorAll('[data-reltime]').forEach(el => { el.textContent = relTime(el.getAttribute('data-reltime')); });
+}, 30000);
+try { _live.sig = _liveSig(); } catch (e) {}
 
 let prevRouteKey = null;
 function currentRouteKey() { const { path, parts } = getRoute(); return path + '|' + parts.join('/'); }
