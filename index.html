@@ -92,11 +92,12 @@ body {
 ::selection { background: rgba(76,175,80,0.25); color: rgb(var(--fg)); }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; } }
 
+h1 + p, h2 + p { margin-top: 1rem; }
 h1, h2, h3, h4, h5 { font-family: 'Poppins', 'Inter', system-ui, sans-serif; letter-spacing: -0.022em; }
-.type-display { font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.028em; line-height: 1.1; }
-.type-h1 { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: 1.18; }
-.type-h2 { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: -0.018em; line-height: 1.22; }
-.type-h3 { font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: -0.012em; line-height: 1.3; }
+.type-display { font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.028em; line-height: 1.1 !important; }
+.type-h1 { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: 1.18 !important; }
+.type-h2 { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: -0.018em; line-height: 1.22 !important; }
+.type-h3 { font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: -0.012em; line-height: 1.3 !important; }
 .type-body-lg { font-size: 17px; line-height: 1.7; letter-spacing: 0; }
 .type-body { font-size: 14.5px; line-height: 1.7; }
 .type-small { font-size: 13px; line-height: 1.6; }
@@ -282,6 +283,11 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .logo-on-light .tb-logo-light { display: block !important; }
 .logo-on-light .tb-logo-dark { display: none !important; }
 .dark .tb-logo-light { display: none; }
+.logo-on-dark .tb-logo-dark { display: none !important; }
+.logo-on-dark .tb-logo-light { display: block !important; filter: brightness(0) invert(1); }
+.logo-on-dark .tb-logo-mark { width: 40px !important; height: 40px !important; }
+.logo-on-dark .tb-logo-word { height: 25px !important; }
+.auth-topbar .tb-logo-wrap { max-width: 100%; }
 .dark .tb-logo-dark { display: block; }
 
 .hero-mesh { position: relative; overflow: hidden; }
@@ -677,6 +683,10 @@ const SEED_USERS = [
   { id:'p3', role:'practitioner', name:'Dr. Elena Reyes', first:'Elena', title:'Wellness Practitioner', email:'elena@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=45', bio:'Gentle sessions for stress relief, breath, and rest.', verified:true, rating:5.0, reviews:76, languages:['English','Filipino'], location:'Ortigas Wellness Center, Pasig', consultation:'In-person & Online', experience:'10 years', quals:'Licensed Wellness Practitioner', phone:'+63 917 555 0103' },
   { id:'p4', role:'practitioner', name:'Kenji Nakamura', first:'Kenji', title:'Rehabilitation Specialist', email:'kenji@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=33', bio:'Post-injury recovery and mobility support.', verified:false, rating:4.7, reviews:42, languages:['English','Japanese'], location:'Alabang Rehab Center', consultation:'In-person', experience:'5 years', quals:'Rehab Support Certified', phone:'+63 917 555 0104' },
   { id:'p5', role:'practitioner', name:'Aisha Patel', first:'Aisha', title:'Relaxation Therapist', email:'aisha@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=26', bio:'Slow, careful sessions for unwinding after long weeks.', verified:true, rating:4.9, reviews:61, languages:['English','Hindi'], location:'Quezon City', consultation:'In-person & Online', experience:'4 years', quals:'Certified Relaxation Therapist', phone:'+63 917 555 0105' },
+  { id:'p6', role:'practitioner', name:'Maria Santos', first:'Maria', title:'Prenatal & Postnatal Specialist', email:'maria@therabyte.demo', bio:'Safe, supportive bodywork before and after birth.', verified:true, rating:4.9, reviews:57, languages:['English','Filipino','Cebuano'], location:'IT Park, Cebu City', consultation:'In-person', experience:'7 years', quals:'Certified Prenatal Massage Therapist', phone:'+63 917 555 0106' },
+  { id:'p7', role:'practitioner', name:'Daniel Cruz', first:'Daniel', title:'Thai Massage Therapist', email:'daniel@therabyte.demo', bio:'Traditional Thai stretching and pressure work for stiff, tired bodies.', verified:true, rating:4.8, reviews:83, languages:['English','Filipino','Thai'], location:'Katipunan, Quezon City', consultation:'In-person', experience:'9 years', quals:'Certified Thai Massage Practitioner', phone:'+63 917 555 0107' },
+  { id:'p8', role:'practitioner', name:'Hannah Lim', first:'Hannah', title:'Acupressure & Cupping Therapist', email:'hannah@therabyte.demo', bio:'Acupressure and cupping to ease chronic tension and improve circulation.', verified:true, rating:4.7, reviews:49, languages:['English','Mandarin','Filipino'], location:'Greenhills, San Juan', consultation:'In-person & Online', experience:'6 years', quals:'Licensed Acupressure Practitioner', phone:'+63 917 555 0108' },
+  { id:'p9', role:'practitioner', name:'Rafael Mendoza', first:'Rafael', title:'Physiotherapist', email:'rafael@therabyte.demo', bio:'Movement-based treatment for posture, back pain, and desk-related strain.', verified:false, rating:4.8, reviews:68, languages:['English','Filipino'], location:'Matina, Davao City', consultation:'In-person & Online', experience:'11 years', quals:'Licensed Physical Therapist', phone:'+63 917 555 0109' },
   { id:'c1', role:'client', name:'Alex Rivera', first:'Alex', email:'alex@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=68', phone:'+63 917 111 0001', joined:'2025-02-10', location:'Makati City' },
   { id:'c2', role:'client', name:'Jamie Santos', first:'Jamie', email:'jamie@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=32', phone:'+63 917 111 0002', joined:'2025-01-22', location:'Pasig' },
   { id:'c3', role:'client', name:'Kai Nakamura', first:'Kai', email:'kai@therabyte.demo', avatar:'https://i.pravatar.cc/150?img=14', phone:'+63 917 111 0003', joined:'2025-03-01', location:'Taguig' },
@@ -697,6 +707,14 @@ const SEED_SERVICES = [
   { id:'sv7', practitioner:'p3', name:'Wellness Session', category:'Wellness', duration:60, price:1400, description:'Holistic session with breath work and gentle bodywork.', prep:'Arrive calm and unhurried.', active:true },
   { id:'sv8', practitioner:'p3', name:'Stress Relief Therapy', category:'Relaxation', duration:50, price:1200, description:'Focused work on shoulders, neck, and head.', prep:'', active:true },
   { id:'sv9', practitioner:'p4', name:'Rehab Support', category:'Rehabilitation', duration:60, price:1500, description:'Post-injury recovery support and pain management.', prep:'Bring any recent medical clearances.', active:true },
+  { id:'sv12', practitioner:'p6', name:'Prenatal Massage', category:'Massage', duration:60, price:1400, description:"Side-lying support and gentle pressure for expectant mothers.", prep:"Share your trimester and any doctor's notes.", active:true },
+  { id:'sv13', practitioner:'p6', name:'Postnatal Recovery', category:'Wellness', duration:60, price:1300, description:"Back, hip, and shoulder relief for new mothers.", prep:"Wear loose, comfortable clothing.", active:true },
+  { id:'sv14', practitioner:'p7', name:'Thai Stretch Massage', category:'Massage', duration:90, price:1800, description:"Assisted stretching and rhythmic pressure along the body's energy lines.", prep:"Wear loose, stretchy clothing.", active:true },
+  { id:'sv15', practitioner:'p7', name:'Foot Reflexology', category:'Relaxation', duration:45, price:900, description:"Focused pressure work on the feet to release tension.", prep:"Come with clean feet or arrive 5 minutes early.", active:true },
+  { id:'sv16', practitioner:'p8', name:'Acupressure Session', category:'Wellness', duration:60, price:1300, description:"Targeted pressure points to ease headaches, tension, and fatigue.", prep:"Eat lightly beforehand.", active:true },
+  { id:'sv17', practitioner:'p8', name:'Cupping Therapy', category:'Massage', duration:45, price:1100, description:"Gentle suction cupping for tight, knotted muscles.", prep:"Let us know if you have sensitive skin.", active:true },
+  { id:'sv18', practitioner:'p9', name:'Physio Assessment & Treatment', category:'Rehabilitation', duration:60, price:1800, description:"Movement assessment with hands-on treatment and a home plan.", prep:"Bring any prior imaging or notes.", active:true },
+  { id:'sv19', practitioner:'p9', name:'Posture Correction', category:'Rehabilitation', duration:45, price:1200, description:"Desk-worker focused posture and mobility coaching.", prep:"Wear comfortable clothing.", active:true },
   { id:'sv10',practitioner:'p5', name:'Relaxation Session', category:'Relaxation', duration:45, price:1000, description:'Gentle relaxation session with aromatherapy options.', prep:'Let us know any scent sensitivities.', active:true },
 ];
 function dOffset(days, h, m=0) { const d = new Date(); d.setDate(d.getDate()+days); d.setHours(h,m,0,0); return d; }
@@ -830,6 +848,14 @@ let CONVERSATIONS = load(STORAGE_KEYS.CONVERSATIONS, SEED_CONVERSATIONS);
 let NOTIFICATIONS = load(STORAGE_KEYS.NOTIFICATIONS, SEED_NOTIFICATIONS);
 let REVIEWS = load(STORAGE_KEYS.REVIEWS, SEED_REVIEWS);
 let AVAILABILITY = load(STORAGE_KEYS.AVAILABILITY, SEED_AVAILABILITY);
+/* Add the newer demo practitioners for people who already have older data saved in this browser. */
+(function mergeNewSeeds() {
+  let changed = false;
+  const newP = ['p6','p7','p8','p9'];
+  SEED_USERS.filter(u => newP.includes(u.id) && !USERS.some(x => x.id === u.id)).forEach(u => { USERS.push(JSON.parse(JSON.stringify(u))); changed = true; });
+  SEED_SERVICES.filter(sv => newP.includes(sv.practitioner) && !SERVICES.some(x => x.id === sv.id)).forEach(sv => { SERVICES.push(JSON.parse(JSON.stringify(sv))); changed = true; });
+  if (changed) { persist(STORAGE_KEYS.USERS, USERS); persist(STORAGE_KEYS.SERVICES, SERVICES); }
+})();
 function saveAll() {
   persist(STORAGE_KEYS.USERS, USERS); persist(STORAGE_KEYS.SERVICES, SERVICES);
   persist(STORAGE_KEYS.APPOINTMENTS, APPOINTMENTS); persist(STORAGE_KEYS.NOTES, NOTES);
@@ -1264,7 +1290,7 @@ function StaticFooter() {
         <div>
           ${LogoMark()}
           <p class="type-small muted mt-4 leading-relaxed max-w-xs">Booking and intake for massage therapists, physiotherapists, and bodyworkers.</p>
-          <p class="text-xs mt-3 italic font-medium text-brand-600">Heal with care, grow with nature.</p>
+          <p class="text-base mt-3 italic font-display font-semibold text-brand-600">Heal with care, grow with nature.</p>
         </div>
         <div>
           <div class="text-[11px] font-bold tracking-[0.14em] uppercase muted mb-4">Product</div>
@@ -1601,8 +1627,8 @@ function Landing() {
             <a href="#/register" class="btn btn-lg btn-primary">Start free ${icon('arrow-right', 15)}</a>
             <a href="#how" onclick="scrollToSection(event,'how')" class="btn btn-lg btn-outline">See how it works</a>
           </div>
-          <p class="mt-10 type-body font-medium italic text-brand-600 dark:text-brand-300">Heal with care, grow with nature.</p>
-          <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs muted">
+          <p class="mt-10 font-display font-semibold italic text-[1.6rem] sm:text-3xl lg:text-[2.125rem] leading-snug tracking-tight text-brand-600 dark:text-brand-300">Heal with care, grow with nature.</p>
+          <div class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs muted">
             <span class="flex items-center gap-1.5">${icon('check', 12)} Free for solo practitioners</span>
             <span class="flex items-center gap-1.5">${icon('check', 12)} No card required</span>
             <span class="flex items-center gap-1.5">${icon('check', 12)} Set up in five minutes</span>
@@ -1749,7 +1775,7 @@ function Landing() {
     <footer class="border-t border-[rgb(var(--border))]">
       <div class="max-w-6xl mx-auto px-5 sm:px-6 py-14">
         <div class="grid sm:grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10 mb-12">
-          <div>${LogoMark()}<p class="type-small muted mt-5 max-w-xs">Booking and intake for massage therapists, physiotherapists, and bodyworkers.</p><p class="text-xs mt-4 italic font-medium text-brand-600 dark:text-brand-300">Heal with care, grow with nature.</p></div>
+          <div>${LogoMark()}<p class="type-small muted mt-5 max-w-xs">Booking and intake for massage therapists, physiotherapists, and bodyworkers.</p><p class="text-base mt-4 italic font-display font-semibold text-brand-600 dark:text-brand-300">Heal with care, grow with nature.</p></div>
           <div><div class="text-[11px] font-bold tracking-[0.14em] uppercase muted mb-4">Product</div><ul class="space-y-2.5 type-small"><li><a href="#how" onclick="scrollToSection(event,'how')" class="muted hover:text-[rgb(var(--fg))] transition">How it works</a></li><li><a href="#practitioners" onclick="scrollToSection(event,'practitioners')" class="muted hover:text-[rgb(var(--fg))] transition">For practitioners</a></li><li><a href="#self-care" onclick="scrollToSection(event,'self-care')" class="muted hover:text-[rgb(var(--fg))] transition">Self-care guides</a></li><li><a href="#faq" onclick="scrollToSection(event,'faq')" class="muted hover:text-[rgb(var(--fg))] transition">FAQ</a></li></ul></div>
           <div><div class="text-[11px] font-bold tracking-[0.14em] uppercase muted mb-4">Company</div><ul class="space-y-2.5 type-small"><li><a href="#/about" class="muted hover:text-[rgb(var(--fg))] transition">About</a></li><li><a href="#/help" class="muted hover:text-[rgb(var(--fg))] transition">Help Center</a></li><li><a href="#/privacy" class="muted hover:text-[rgb(var(--fg))] transition">Privacy</a></li><li><a href="#/terms" class="muted hover:text-[rgb(var(--fg))] transition">Terms</a></li></ul></div>
           <div><div class="text-[11px] font-bold tracking-[0.14em] uppercase muted mb-4">Contact</div><ul class="space-y-2.5 type-small"><li><a href="mailto:hello@therabyte.example" class="muted hover:text-[rgb(var(--fg))] transition">hello@therabyte.example</a></li><li><a href="mailto:privacy@therabyte.example" class="muted hover:text-[rgb(var(--fg))] transition">privacy@therabyte.example</a></li></ul></div>
@@ -1775,19 +1801,19 @@ function AuthLayout(children) {
   <div class="min-h-screen grid lg:grid-cols-2">
     <div class="hidden lg:flex flex-col justify-between p-10 auth-panel text-white relative">
       <div class="relative z-10">
-        <div class="logo-on-light inline-flex rounded-2xl bg-white px-4 py-3 shadow-lift">${LogoMark()}</div>
+        <div class="logo-on-dark inline-flex">${LogoMark()}</div>
       </div>
       <div class="relative z-10 max-w-md">
         <div class="type-display text-4xl xl:text-5xl text-white">Know before<br>they arrive.</div>
         <p class="mt-5 text-white/80 type-body-lg leading-relaxed">A booking tool that tells you what your clients actually need — before the session starts.</p>
-        <p class="mt-6 text-white/65 text-sm italic">Heal with care, grow with nature.</p>
+        <p class="mt-10 text-white font-display font-semibold italic text-2xl xl:text-[1.75rem] leading-snug tracking-tight">Heal with care, grow with nature.</p>
       </div>
       <div class="relative z-10 text-xs text-white/65 flex items-center justify-between">
         <span>© ${new Date().getFullYear()} therabyte</span>
       </div>
     </div>
     <div class="flex flex-col relative overflow-hidden">
-      <div class="lg:hidden p-4 flex items-center justify-between border-b border-[rgb(var(--border))]">
+      <div class="auth-topbar lg:hidden p-4 flex items-center justify-between border-b border-[rgb(var(--border))]">
         <span>${LogoMark(true)}</span>
         <div data-theme-toggle></div>
       </div>
@@ -1856,6 +1882,10 @@ function handleLogin(form) {
   const email = form.elements.email.value.trim().toLowerCase();
   const user = USERS.find(u => u.email.toLowerCase() === email);
   if (!user) { toast('No account found with that email', 'error'); return; }
+  if (user.twoFactorEnabled && user.totpSecret) { openTwoFactorChallenge(user.id); return; }
+  completeLogin(user);
+}
+function completeLogin(user) {
   resetBookingFlow();
   set({ user }); persistSession(); toast(`Welcome back, ${user.first}`); navigate('/app/dashboard');
 }
@@ -1921,6 +1951,7 @@ const PRACTITIONER_NAV = [
 const CLIENT_NAV = [
   { route:'dashboard', label:'Home', icon:'home' },
   { route:'book', label:'Book', icon:'plus-circle' },
+  { route:'practitioners', label:'Therapists', icon:'users' },
   { route:'appointments', label:'Sessions', icon:'calendar-check' },
   { route:'self-care', label:'Self-care', icon:'hand-heart' },
   { route:'settings', label:'Settings', icon:'settings' },
@@ -2149,7 +2180,8 @@ function PageClientDashboard() {
       </div>`;
     })() : ''}
 
-    <a href="#/app/self-care" class="card card-hover p-5 flex items-center gap-4 mt-8">
+    <a href="#/app/practitioners" class="card card-hover p-5 flex items-center gap-4 mt-8"><div class="w-11 h-11 rounded-xl bg-brand-500/10 text-brand-600 grid place-items-center shrink-0">${icon('users', 20)}</div><div class="flex-1 min-w-0"><div class="font-semibold">Meet our practitioners</div><div class="text-xs muted mt-0.5">Browse profiles, specialties and reviews</div></div>${icon('arrow-right', 15, 'muted')}</a>
+    <a href="#/app/self-care" class="card card-hover p-5 flex items-center gap-4 mt-4">
       <div class="w-11 h-11 rounded-xl bg-brand-500/10 text-brand-600 grid place-items-center shrink-0">${icon('hand-heart', 20)}</div>
       <div class="flex-1 min-w-0"><div class="type-h3 text-[14px]">Between sessions</div><div class="text-xs muted mt-0.5">Short routines for neck, shoulders, lower back, and more.</div></div>
       ${icon('arrow-right', 14, 'muted')}
@@ -2758,6 +2790,108 @@ function PageClientDetail(id) {
   </div>`;
 }
 
+
+/* ============================================================
+   PRACTITIONER PROFILES
+   ============================================================ */
+const PROFILE_EXTRA = {
+  p1:{ specialties:['Deep tissue','Swedish','Neck & shoulders','Desk-related tension'], approach:"I work slowly and listen first. Sessions start with a short check-in about where you hold tension, then I tailor pressure to what your body will actually let go of.", credentials:['Licensed Massage Therapist','Swedish & Deep Tissue certified','Member, Philippine Massage Therapists Association'], bestFor:'People who sit all day and want lasting relief.' },
+  p2:{ specialties:['Sports recovery','Mobility','Pre/post-event','Hips & hamstrings'], approach:"Training load, not just soreness, guides each session. We combine hands-on work with mobility drills you can repeat at home.", credentials:['Certified Sports Therapist','First Aid & CPR certified'], bestFor:'Runners, lifters and weekend athletes.' },
+  p3:{ specialties:['Stress relief','Breath work','Head & scalp','Sleep support'], approach:"A calm, unhurried room and an unhurried pace. Bodywork is paired with simple breathing so you leave feeling settled, not just loosened.", credentials:['Licensed Wellness Practitioner','Breathwork facilitator'], bestFor:'Anyone running on stress and short sleep.' },
+  p4:{ specialties:['Post-injury recovery','Pain management','Joint mobility'], approach:"Careful, progressive work that respects your recovery stage and your doctor's guidance.", credentials:['Rehab Support Certified'], bestFor:'People returning to movement after an injury.' },
+  p5:{ specialties:['Relaxation','Aromatherapy','Full-body unwinding'], approach:"Slow, gentle strokes with optional aromatherapy. Quiet by default; we can chat if you prefer.", credentials:['Certified Relaxation Therapist'], bestFor:'Unwinding after long weeks.' },
+  p6:{ specialties:['Prenatal','Postnatal recovery','Lower back & hips','Swelling relief'], approach:"Positioning and pressure are adjusted for each trimester. Postnatal sessions focus on the back, hips and shoulders that carry the load of new motherhood.", credentials:['Certified Prenatal Massage Therapist','Infant CPR certified'], bestFor:'Expectant and new mothers.' },
+  p7:{ specialties:['Thai stretch massage','Assisted stretching','Full-body','Foot reflexology'], approach:"A flowing mix of compression and passive stretching, done fully clothed on a mat. Expect to feel taller afterwards.", credentials:['Certified Thai Massage Practitioner','Trained in Chiang Mai, Thailand'], bestFor:'Stiff, tight bodies that need mobility and release.' },
+  p8:{ specialties:['Acupressure','Cupping','Tension headaches','Circulation'], approach:"Pressure points and cupping combined with simple lifestyle tips. Sessions are gentle and always explained as we go.", credentials:['Licensed Acupressure Practitioner'], bestFor:'Chronic tension and tension headaches.' },
+  p9:{ specialties:['Posture','Lower back pain','Desk strain','Movement coaching'], approach:"Assessment first, then hands-on treatment and a short home plan. We aim to make you less dependent on sessions over time.", credentials:['Licensed Physical Therapist'], bestFor:'Desk workers with back, neck or posture pain.' },
+};
+const pExtra = p => PROFILE_EXTRA[p.id] || { specialties: [], approach: '', credentials: p.quals ? [p.quals] : [], bestFor: '' };
+function practitionerServices(p) { return SERVICES.filter(s => s.practitioner === p.id && s.active !== false); }
+function bookService(id) {
+  const s = getService(id); if (!s) return;
+  bookState = { practitioner: s.practitioner, service: id, areas: [], date: null, time: null, ref: null, _submitting: false };
+  bookViewMonth = null; bookStep = 1;
+  navigate('/app/book');
+}
+window.bookService = bookService;
+const stars = (r) => `<span class="inline-flex items-center gap-1 font-semibold"><span style="color:#D97706">★</span>${Number(r || 0).toFixed(1)}</span>`;
+
+function PagePractitioners() {
+  const u = State.user;
+  const q = (State.pracQuery || '').trim().toLowerCase();
+  const spec = State.pracSpec || '';
+  const all = USERS.filter(x => x.role === 'practitioner' && practitionerServices(x).length && (getPrivacy(x, 'profile') !== 'hidden' || x.id === u.id));
+  const allSpecs = [...new Set(all.flatMap(x => pExtra(x).specialties.slice(0, 2)))].sort();
+  const list = all.filter(x => {
+    const ex = pExtra(x);
+    const hay = [x.name, x.title, x.location, ex.specialties.join(' ')].join(' ').toLowerCase();
+    return (!q || hay.includes(q)) && (!spec || ex.specialties.includes(spec));
+  });
+  return `
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    ${PageHeader({ backHref:'#/app/dashboard', backLabel:'Back', eyebrow:'Find your fit', title:'Our practitioners', description:'Meet the therapists behind the sessions. Open a profile to see their approach, specialties and reviews.' })}
+    <div class="relative mb-4"><input id="prac-search" class="input" placeholder="Search by name, specialty or place" value="${esc(State.pracQuery || '')}" oninput="State.pracQuery=this.value;debouncedRerender('#prac-search')" aria-label="Search practitioners" autocomplete="off"></div>
+    <div class="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar"><button onclick="State.pracSpec='';render()" class="chip ${!spec ? 'chip-on' : 'chip-off'} chip-sm">All</button>${allSpecs.map(sp => `<button onclick="State.pracSpec='${esc(sp).replace(/'/g, '&#39;')}';render()" class="chip ${spec === sp ? 'chip-on' : 'chip-off'} chip-sm">${esc(sp)}</button>`).join('')}</div>
+    ${list.length === 0 ? EmptyState({ icon:'search-x', title:'No practitioners match', description:'Try a different name or clear the filter.' }) : `<div class="grid sm:grid-cols-2 gap-4" data-stagger>${list.map(x => {
+      const ex = pExtra(x); const from = Math.min(...practitionerServices(x).map(sv => sv.price));
+      return `<a href="#/app/practitioners/${x.id}" class="card card-hover p-5 block">
+        <div class="flex items-start gap-4">${avatar(x, 56)}
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap"><div class="type-h3 text-[16px]">${esc(x.name)}</div>${x.verified ? statusBadge('verified') : ''}</div>
+            <div class="text-xs muted mt-1">${esc(x.title || '')}</div>
+            <div class="text-xs muted mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">${stars(x.rating)}<span>${x.reviews || 0} reviews</span><span>${esc((x.location || '').split(',')[0])}</span></div>
+          </div>
+        </div>
+        <p class="type-small muted mt-4 leading-relaxed">${esc(x.bio || '')}</p>
+        <div class="flex flex-wrap gap-1.5 mt-3">${ex.specialties.slice(0, 3).map(sp => `<span class="text-[10px] px-2 py-0.5 rounded-md bg-brand-500/12 text-brand-700 dark:text-brand-300 font-medium">${esc(sp)}</span>`).join('')}</div>
+        <div class="flex items-center justify-between mt-4 pt-4 border-t border-[rgb(var(--border))] text-xs"><span class="muted">From <span class="font-display font-bold text-[rgb(var(--fg))]">${fmtMoney(from)}</span></span><span class="font-semibold text-brand-600 flex items-center gap-1">View profile ${icon('arrow-right', 11)}</span></div>
+      </a>`; }).join('')}</div>`}
+  </div>`;
+}
+
+function PagePractitionerProfile(id) {
+  const p = USERS.find(x => x.id === id && x.role === 'practitioner');
+  if (!p) return `<div class="max-w-3xl mx-auto px-4 sm:px-6 py-8">${PageHeader({ backHref:'#/app/practitioners', backLabel:'All practitioners', title:'Profile not found' })}${EmptyState({ icon:'user-x', title:'We could not find that practitioner', description:'They may have left therabyte.' })}</div>`;
+  const u = State.user, ex = pExtra(p), svcs = practitionerServices(p);
+  const revs = REVIEWS.filter(r => r.practitioner === p.id).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const isMe = u && u.id === p.id;
+  const fact = (ic, label, val) => val ? `<div class="flex items-start gap-3"><div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 grid place-items-center shrink-0">${icon(ic, 14)}</div><div class="min-w-0"><div class="text-[10px] font-bold uppercase tracking-wider muted">${label}</div><div class="type-small font-medium">${esc(val)}</div></div></div>` : '';
+  return `
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <a href="#/app/practitioners" class="text-xs font-medium muted hover:text-[rgb(var(--fg))] inline-flex items-center gap-1.5 mb-4 transition">${icon('arrow-left', 12)} All practitioners</a>
+    <div class="card p-6 sm:p-8">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+        ${avatar(p, 96)}
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 flex-wrap"><h1 class="type-h1 text-2xl sm:text-3xl">${esc(p.name)}</h1>${p.verified ? statusBadge('verified') : ''}</div>
+          <div class="type-small muted mt-1.5">${esc(p.title || '')}</div>
+          <div class="text-sm mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">${stars(p.rating)}<span class="muted">${p.reviews || 0} reviews</span>${isMe ? `<a href="#/app/settings" class="text-brand-600 font-semibold">Edit your profile</a>` : ''}</div>
+        </div>
+        ${!isMe && u && u.role === 'client' && svcs.length ? `<a href="#book-services" onclick="event.preventDefault();document.getElementById('book-services').scrollIntoView({behavior:'smooth'})" class="btn btn-primary shrink-0">Book a session</a>` : ''}
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 mt-7 pt-6 border-t border-[rgb(var(--border))]">
+        ${fact('map-pin', 'Location', p.location)}${fact('video', 'Sessions', p.consultation)}${fact('award', 'Experience', p.experience)}${fact('languages', 'Languages', (p.languages || []).join(', '))}
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-[1.6fr_1fr] gap-6 mt-6">
+      <div class="space-y-6 min-w-0">
+        <div class="card p-6"><div class="type-h3 text-[15px] mb-3">About</div><p class="type-small muted leading-relaxed">${esc(p.bio || '')}</p>${ex.approach ? `<p class="type-small muted leading-relaxed mt-3">${esc(ex.approach)}</p>` : ''}${ex.bestFor ? `<div class="mt-4 p-3 rounded-lg surface-2 text-xs flex items-start gap-2">${icon('heart', 12)}<span><span class="font-semibold">Best for:</span> ${esc(ex.bestFor)}</span></div>` : ''}</div>
+        <div id="book-services" class="card p-6"><div class="type-h3 text-[15px] mb-4">Services</div>
+          ${svcs.length ? `<div class="divide-y divide-[rgb(var(--border))]">${svcs.map(sv => `<div class="py-4 first:pt-0 last:pb-0 flex items-start justify-between gap-4"><div class="min-w-0"><div class="type-small font-semibold">${esc(sv.name)}</div><p class="text-xs muted mt-1 leading-relaxed">${esc(sv.description || '')}</p><div class="text-xs muted mt-2 flex items-center gap-1">${icon('clock', 11)} ${sv.duration} min</div></div><div class="text-right shrink-0"><div class="font-display font-bold">${fmtMoney(sv.price)}</div>${!isMe && u && u.role === 'client' ? `<button onclick="bookService('${sv.id}')" class="btn btn-sm btn-outline mt-2">Book</button>` : ''}</div></div>`).join('')}</div>` : `<p class="type-small muted">No services listed yet.</p>`}
+        </div>
+        <div class="card p-6"><div class="type-h3 text-[15px] mb-4">Reviews</div>
+          ${revs.length ? `<div class="space-y-4">${revs.slice(0, 5).map(r => `<div><div class="flex items-center gap-2 text-xs"><span style="color:#D97706">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span><span class="font-semibold">${esc(getUser(r.client).first)}</span><span class="muted">${fmtDate(r.date)}</span></div><p class="type-small muted mt-1 leading-relaxed">${esc(r.comment)}</p></div>`).join('')}</div>` : `<p class="type-small muted">No written reviews yet.</p>`}
+        </div>
+      </div>
+      <div class="space-y-6 min-w-0">
+        ${ex.specialties.length ? `<div class="card p-6"><div class="type-h3 text-[15px] mb-3">Specialties</div><div class="flex flex-wrap gap-2">${ex.specialties.map(sp => `<span class="text-xs px-2.5 py-1 rounded-md bg-brand-500/12 text-brand-700 dark:text-brand-300 font-medium">${esc(sp)}</span>`).join('')}</div></div>` : ''}
+        <div class="card p-6"><div class="type-h3 text-[15px] mb-3">Credentials</div><ul class="space-y-2.5">${ex.credentials.map(c => `<li class="type-small flex items-start gap-2">${icon('check', 13, 'text-brand-600 mt-0.5 shrink-0')}<span>${esc(c)}</span></li>`).join('')}</ul>${p.verified ? '' : `<p class="text-xs muted mt-3">Verification in progress.</p>`}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
 function PageGuides(areaId) {
   if (areaId && GUIDES[areaId]) {
     const g = GUIDES[areaId];
@@ -3060,7 +3194,7 @@ function PageSettings() {
   function body() {
     if (tab === 'profile') return `
       <div class="card p-6">
-        <div class="type-h3 text-[15px] mb-5">Your profile</div>
+        <div class="flex items-center justify-between gap-3 mb-5 flex-wrap"><div class="type-h3 text-[15px]">Your profile</div>${isPractitioner ? `<a href="#/app/practitioners/${u.id}" class="text-xs font-semibold text-brand-600 hover:underline inline-flex items-center gap-1">${icon('eye', 12)} View public profile</a>` : ''}</div>
         <div class="flex items-center gap-5 mb-6">
           <div class="relative">${avatar(u, 72)}<label for="photo-input" class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-brand-600 text-white grid place-items-center cursor-pointer shadow-lift hover:opacity-90 transition">${icon('camera', 13)}</label><input id="photo-input" type="file" accept="image/*" class="hidden" onchange="handlePhotoChange(this)"></div>
           <div><label for="photo-input" class="btn btn-sm btn-outline cursor-pointer inline-flex">${icon('upload', 12)} ${hasSavedAvatar ? 'Change photo' : 'Choose photo'}</label>${hasSavedAvatar ? `<button onclick="resetPhoto()" class="text-xs muted hover:text-red-600 ml-2">Reset</button>` : ''}<div class="text-xs muted mt-2">${hasSavedAvatar ? 'JPG or PNG · up to 5MB' : 'No photo yet. Choose one so people recognise you.'}</div></div>
@@ -3078,7 +3212,8 @@ function PageSettings() {
           <div class="type-h3 text-[15px] mb-4">Sign in</div>
           <div class="space-y-2">
             <button onclick="openChangePassword()" class="w-full flex items-center justify-between p-3 rounded-xl surface-2 hover:bg-[rgb(var(--surface-2))] transition"><div class="flex items-center gap-3 text-left"><div class="w-8 h-8 rounded-lg bg-[rgb(var(--surface))] text-brand-600 grid place-items-center">${icon('key', 13)}</div><div><div class="type-small font-medium">Change password</div><div class="text-xs muted mt-0.5">Last changed 3 months ago</div></div></div>${icon('chevron-right', 15, 'muted')}</button>
-            <label class="w-full flex items-center justify-between p-3 rounded-xl surface-2 cursor-pointer"><div class="flex items-center gap-3 text-left"><div class="w-8 h-8 rounded-lg bg-[rgb(var(--surface))] text-brand-600 grid place-items-center">${icon('shield-check', 13)}</div><div><div class="type-small font-medium">Two-factor authentication</div><div class="text-xs muted mt-0.5">${u.twoFactorEnabled ? 'Enabled' : 'Optional extra security'}</div></div></div><span class="switch"><input type="checkbox" ${u.twoFactorEnabled ? 'checked' : ''} onchange="toggleTwoFactor(this.checked)"><span class="switch-slider"></span></span></label>
+            <label class="w-full flex items-center justify-between p-3 rounded-xl surface-2 cursor-pointer"><div class="flex items-center gap-3 text-left"><div class="w-8 h-8 rounded-lg bg-[rgb(var(--surface))] text-brand-600 grid place-items-center">${icon('shield-check', 13)}</div><div><div class="type-small font-medium">Two-factor authentication</div><div class="text-xs muted mt-0.5">${tfaOn(u) ? 'On · authenticator app' : 'Use an authenticator app for a one-time code at sign in'}</div></div></div><span class="switch"><input type="checkbox" aria-label="Two-factor authentication" ${tfaOn(u) ? 'checked' : ''} onchange="toggleTwoFactor(this.checked)"><span class="switch-slider"></span></span></label>
+            ${tfaOn(u) ? `<div class="w-full flex items-center justify-between gap-3 p-3 rounded-xl surface-2"><div class="flex items-center gap-3 text-left"><div class="w-8 h-8 rounded-lg bg-[rgb(var(--surface))] text-brand-600 grid place-items-center">${icon('life-buoy', 13)}</div><div><div class="type-small font-medium">Backup codes</div><div class="text-xs muted mt-0.5">${(u.backupHashes || []).length} unused. Use one if you lose your phone.</div></div></div><button onclick="regenBackupCodes()" class="btn btn-sm btn-outline">Get new codes</button></div>` : ''}
             <div class="w-full flex items-center justify-between p-3 rounded-xl surface-2"><div class="flex items-center gap-3 text-left"><div class="w-8 h-8 rounded-lg bg-[rgb(var(--surface))] text-brand-600 grid place-items-center">${icon('mail', 13)}</div><div><div class="type-small font-medium">Email address</div><div class="text-xs muted mt-0.5">${esc(u.email)}</div></div></div><span class="badge" style="background:rgba(76,175,80,0.12);color:#2E7D32">Verified</span></div>
           </div>
         </div>
@@ -3111,7 +3246,7 @@ function PageSettings() {
       <div class="space-y-4">
         <div class="card p-6">
           <div class="type-h3 text-[15px] mb-4">Who can see what</div>
-          <div class="space-y-2">${[['Profile visibility','Who can see your profile', isPractitioner ? 'Clients only' : 'Practitioners only'],['Message requests','Who can message you','Existing connections'],['Online status','Show when you are active','Off'],['Focus areas','Who sees your focus areas', isPractitioner ? 'You only' : 'Your practitioner only']].map(([t, s, v]) => `<div class="p-3 rounded-xl surface-2 flex items-center justify-between gap-3"><div class="min-w-0"><div class="type-small font-medium">${t}</div><div class="text-xs muted mt-0.5">${s}</div></div><div class="text-xs font-semibold text-brand-600 whitespace-nowrap">${v}</div></div>`).join('')}</div>
+          <div class="space-y-2">${PRIVACY_FIELDS.map(f => { const role = isPractitioner ? 'practitioner' : 'client'; const cur = getPrivacy(u, f.key); const opts = f.options[role]; const hint = (opts.find(o => o[0] === cur) || [])[2] || ''; return `<div class="p-3 rounded-xl surface-2 flex items-center justify-between gap-3 flex-wrap"><div class="min-w-0 flex-1 basis-48"><label for="priv-${f.key}" class="type-small font-medium block">${f.label}</label><div class="text-xs muted mt-0.5">${f.sub[role] || f.sub.all}</div>${hint ? `<div class="text-[11px] muted mt-1.5 flex items-start gap-1.5">${icon('info', 11)}<span>${hint}</span></div>` : ''}</div><select id="priv-${f.key}" class="input !h-9 !min-h-0 !py-0 !text-xs font-semibold w-full sm:w-auto sm:min-w-[200px]" onchange="setPrivacy('${f.key}', this.value)">${opts.map(o => `<option value="${o[0]}" ${o[0] === cur ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></div>`; }).join('')}</div>
         </div>
         <div class="card p-6">
           <div class="type-h3 text-[15px] mb-3">Consent</div>
@@ -3141,10 +3276,232 @@ function PageSettings() {
 }
 function toggleNotifPref(key, value) { if (!State.user) return; State.user.notifications = { ...(State.user.notifications || {}), [key]: value }; saveAll(); persistSession(); toast('Preference saved'); }
 window.toggleNotifPref = toggleNotifPref;
+
+/* ============================================================
+   PRIVACY CHOICES
+   ============================================================ */
+const PRIVACY_FIELDS = [
+  { key:'profile', label:'Profile visibility', sub:{ practitioner:'Who can find and open your profile', client:'Who can see your profile' },
+    default:{ practitioner:'clients', client:'booked' },
+    options:{
+      practitioner:[['everyone','Everyone','Anyone can find you, even without an account.'],['clients','Signed-in clients only'],['hidden','Hidden','You will not appear in the practitioner list. People with an existing booking can still see you.']],
+      client:[['all','All practitioners'],['booked','Practitioners I have booked'],['nobody','Nobody','Practitioners only see your name on bookings you make.']] } },
+  { key:'messages', label:'Message requests', sub:{ all:'Who can start a conversation with you' },
+    default:{ practitioner:'connections', client:'connections' },
+    options:{
+      practitioner:[['everyone','Anyone on therabyte'],['clients','Clients with a booking'],['connections','Existing connections only'],['nobody','Nobody','You can still reply in conversations you already have.']],
+      client:[['everyone','Any practitioner'],['booked','Practitioners I have booked'],['connections','Existing connections only'],['nobody','Nobody','You can still reply in conversations you already have.']] } },
+  { key:'online', label:'Online status', sub:{ all:'Show when you are active' },
+    default:{ practitioner:'off', client:'off' },
+    options:{
+      practitioner:[['everyone','Show to everyone'],['connections','Show to connections only'],['off','Off']],
+      client:[['everyone','Show to everyone'],['connections','Show to my practitioners only'],['off','Off']] } },
+  { key:'focus', label:'Focus areas', sub:{ practitioner:'Who sees the specialties and focus areas on your profile', client:'Who sees the areas you mark on the body map' },
+    default:{ practitioner:'me', client:'practitioner' },
+    options:{
+      practitioner:[['everyone','Everyone'],['clients','Signed-in clients'],['me','Only me']],
+      client:[['practitioner','Only the practitioner I book'],['booked','All practitioners I have booked'],['me','Only me','Your practitioner will not see your focus areas before a session.']] } },
+];
+function getPrivacy(u, key) {
+  const f = PRIVACY_FIELDS.find(x => x.key === key); const role = u.role === 'practitioner' ? 'practitioner' : 'client';
+  const val = u.privacy && u.privacy[key]; const ok = f.options[role].some(o => o[0] === val);
+  return ok ? val : f.default[role];
+}
+function setPrivacy(key, val) {
+  if (!State.user) return;
+  updateAccount(State.user.id, { privacy: { ...(State.user.privacy || {}), [key]: val } });
+  toast('Saved'); render();
+}
+window.setPrivacy = setPrivacy; window.getPrivacy = getPrivacy;
 function toggleAnalyticsConsent(value) { if (!State.user) return; State.user.analyticsConsent = value; saveAll(); persistSession(); toast(value ? 'Anonymized usage on' : 'Anonymized usage off'); }
 window.toggleAnalyticsConsent = toggleAnalyticsConsent;
-function toggleTwoFactor(value) { if (!State.user) return; State.user.twoFactorEnabled = value; saveAll(); persistSession(); toast(value ? 'Two-factor authentication enabled' : 'Two-factor authentication disabled'); render(); }
+/* ============================================================
+   TWO-FACTOR AUTHENTICATION (TOTP, RFC 6238 — works with Google Authenticator, Authy, 1Password…)
+   ============================================================ */
+const tfaOn = (u) => !!(u && u.twoFactorEnabled && u.totpSecret);
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+function b32encode(bytes) { let bits = 0, val = 0, out = ''; for (const b of bytes) { val = (val << 8) | b; bits += 8; while (bits >= 5) { out += B32[(val >>> (bits - 5)) & 31]; bits -= 5; } } if (bits > 0) out += B32[(val << (5 - bits)) & 31]; return out; }
+function b32decode(str) { let bits = 0, val = 0; const out = []; for (const ch of String(str).toUpperCase().replace(/[^A-Z2-7]/g, '')) { val = (val << 5) | B32.indexOf(ch); bits += 5; if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; } } return new Uint8Array(out); }
+function sha1(bytes) {
+  const rotl = (n, b) => (n << b) | (n >>> (32 - b));
+  const l = bytes.length, withPad = new Uint8Array(((l + 9 + 63) >> 6) << 6);
+  withPad.set(bytes); withPad[l] = 0x80;
+  const dv = new DataView(withPad.buffer); dv.setUint32(withPad.length - 4, (l * 8) >>> 0); dv.setUint32(withPad.length - 8, Math.floor(l / 0x20000000));
+  let h0 = 0x67452301, h1 = 0xEFCDAB89, h2 = 0x98BADCFE, h3 = 0x10325476, h4 = 0xC3D2E1F0;
+  const w = new Array(80);
+  for (let i = 0; i < withPad.length; i += 64) {
+    for (let t = 0; t < 16; t++) w[t] = dv.getUint32(i + t * 4);
+    for (let t = 16; t < 80; t++) w[t] = rotl(w[t-3] ^ w[t-8] ^ w[t-14] ^ w[t-16], 1);
+    let a = h0, b = h1, c = h2, d = h3, e = h4;
+    for (let t = 0; t < 80; t++) {
+      const [f, k] = t < 20 ? [(b & c) | (~b & d), 0x5A827999] : t < 40 ? [b ^ c ^ d, 0x6ED9EBA1] : t < 60 ? [(b & c) | (b & d) | (c & d), 0x8F1BBCDC] : [b ^ c ^ d, 0xCA62C1D6];
+      const tmp = (rotl(a, 5) + f + e + k + w[t]) >>> 0; e = d; d = c; c = rotl(b, 30) >>> 0; b = a; a = tmp;
+    }
+    h0 = (h0 + a) >>> 0; h1 = (h1 + b) >>> 0; h2 = (h2 + c) >>> 0; h3 = (h3 + d) >>> 0; h4 = (h4 + e) >>> 0;
+  }
+  const out = new Uint8Array(20), o = new DataView(out.buffer);
+  [h0, h1, h2, h3, h4].forEach((h, i) => o.setUint32(i * 4, h));
+  return out;
+}
+function hmacSha1(key, msg) {
+  if (key.length > 64) key = sha1(key);
+  const k = new Uint8Array(64); k.set(key);
+  const ipad = new Uint8Array(64 + msg.length), opad = new Uint8Array(64 + 20);
+  for (let i = 0; i < 64; i++) { ipad[i] = k[i] ^ 0x36; opad[i] = k[i] ^ 0x5c; }
+  ipad.set(msg, 64); opad.set(sha1(ipad), 64);
+  return sha1(opad);
+}
+function totpAt(secretB32, step, digits = 6) {
+  const msg = new Uint8Array(8); new DataView(msg.buffer).setUint32(4, step >>> 0); new DataView(msg.buffer).setUint32(0, Math.floor(step / 0x100000000));
+  const h = hmacSha1(b32decode(secretB32), msg), off = h[19] & 15;
+  const bin = ((h[off] & 0x7f) << 24) | (h[off+1] << 16) | (h[off+2] << 8) | h[off+3];
+  return String(bin % Math.pow(10, digits)).padStart(digits, '0');
+}
+const totpStepNow = (t = Date.now()) => Math.floor(t / 30000);
+/* Returns the matching time-step (allowing ±1 for clock drift) or null. */
+function verifyTotp(secret, code, lastStep = 0) {
+  code = String(code || '').replace(/\s/g, '');
+  if (!/^\d{6}$/.test(code)) return null;
+  const now = totpStepNow();
+  for (let d = -1; d <= 1; d++) { const st = now + d; if (st > lastStep && totpAt(secret, st) === code) return st; }
+  return null;
+}
+function newTotpSecret() { const b = new Uint8Array(20); crypto.getRandomValues(b); return b32encode(b); }
+function newBackupCodes(n = 8) {
+  const alpha = 'abcdefghjkmnpqrstuvwxyz23456789';
+  return Array.from({ length: n }, () => { const r = new Uint8Array(8); crypto.getRandomValues(r); const c = [...r].map(x => alpha[x % alpha.length]).join(''); return c.slice(0, 4) + '-' + c.slice(4); });
+}
+const hashBackup = (c) => [...sha1(new TextEncoder().encode(String(c).toLowerCase().replace(/[^a-z0-9]/g, '')))].map(x => x.toString(16).padStart(2, '0')).join('');
+const groupKey = (k) => k.replace(/(.{4})/g, '$1 ').trim();
+function otpauthUri(u, secret) { return `otpauth://totp/therabyte:${encodeURIComponent(u.email)}?secret=${secret}&issuer=therabyte&algorithm=SHA1&digits=6&period=30`; }
+function updateAccount(userId, fields) {
+  const rec = USERS.find(x => x.id === userId);
+  if (rec) Object.assign(rec, fields);
+  if (State.user && State.user.id === userId) Object.assign(State.user, fields);
+  saveAll(); persistSession();
+}
+const _tfa = { secret: null, fails: 0, lockUntil: 0 };
+function _tfaLocked() { const left = Math.ceil((_tfa.lockUntil - Date.now()) / 1000); return left > 0 ? left : 0; }
+function _tfaFail(errId) {
+  _tfa.fails++;
+  if (_tfa.fails >= 5) { _tfa.lockUntil = Date.now() + 30000; _tfa.fails = 0; }
+  const el = document.getElementById(errId); if (el) { const l = _tfaLocked(); el.textContent = l ? `Too many attempts. Try again in ${l}s.` : 'That code is not right. Check the latest code in your app.'; el.classList.remove('hidden'); }
+  const inp = document.getElementById('tfa-code'); if (inp) { inp.select(); }
+}
+/* Accepts an authenticator code or an unused backup code. Returns { ok, usedBackup }. */
+function checkSecondFactor(user, raw) {
+  const clean = String(raw || '').replace(/[\s-]/g, '');
+  if (/^\d{6}$/.test(clean)) {
+    const st = verifyTotp(user.totpSecret, clean, user.lastTotpStep || 0);
+    if (st) { updateAccount(user.id, { lastTotpStep: st }); return { ok: true }; }
+    return { ok: false };
+  }
+  if (/^[a-z0-9]{8}$/i.test(clean)) {
+    const h = hashBackup(clean), list = user.backupHashes || [];
+    if (list.includes(h)) { updateAccount(user.id, { backupHashes: list.filter(x => x !== h) }); return { ok: true, usedBackup: true }; }
+  }
+  return { ok: false };
+}
+
+/* --- Sign-in challenge --- */
+function openTwoFactorChallenge(userId) {
+  modal({ title: 'Two-step verification', size: 'sm', body: `
+    <form onsubmit="event.preventDefault();submitTwoFactorChallenge('${userId}')" class="space-y-4">
+      <div class="flex items-start gap-3"><div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 grid place-items-center shrink-0">${icon('shield-check', 18)}</div><p class="type-small muted leading-relaxed">Open your authenticator app and enter the 6-digit code for <span class="font-semibold text-[rgb(var(--fg))]">therabyte</span>.</p></div>
+      <div><label class="type-small font-medium mb-1.5 block" for="tfa-code">Verification code</label><input id="tfa-code" class="input type-mono text-center text-xl tracking-[0.3em]" inputmode="text" autocomplete="one-time-code" maxlength="9" placeholder="000000" aria-describedby="tfa-err" required></div>
+      <div id="tfa-err" class="hidden text-xs" style="color:#B91C1C" role="alert"></div>
+      <button type="submit" class="btn btn-lg btn-primary w-full">Verify and sign in</button>
+      <p class="text-xs muted text-center">Lost your phone? Enter one of your backup codes instead.</p>
+    </form>` });
+}
+window.openTwoFactorChallenge = openTwoFactorChallenge;
+function submitTwoFactorChallenge(userId) {
+  const user = USERS.find(x => x.id === userId); if (!user) return;
+  const l = _tfaLocked(); if (l) { _tfaFail('tfa-err'); return; }
+  const raw = document.getElementById('tfa-code')?.value;
+  const r = checkSecondFactor(user, raw);
+  if (!r.ok) { _tfaFail('tfa-err'); return; }
+  _tfa.fails = 0; closeModal();
+  completeLogin(user);
+  if (r.usedBackup) setTimeout(() => toast(`Backup code used. ${(user.backupHashes || []).length} left.`, 'info'), 600);
+}
+window.submitTwoFactorChallenge = submitTwoFactorChallenge;
+
+/* --- Turning it on / off --- */
+function toggleTwoFactor(value) {
+  if (!State.user) return;
+  if (value) { openTwoFactorSetup(); render(); }
+  else { openTwoFactorDisable(); render(); }
+}
 window.toggleTwoFactor = toggleTwoFactor;
+function openTwoFactorSetup() {
+  const u = State.user; _tfa.secret = newTotpSecret(); const uri = otpauthUri(u, _tfa.secret);
+  modal({ title: 'Set up two-step verification', size: 'md', body: `
+    <ol class="space-y-5">
+      <li class="flex gap-3"><div class="guide-num">1</div><div class="flex-1 min-w-0"><div class="type-small font-semibold">Scan this code with an authenticator app</div><p class="text-xs muted mt-1">Google Authenticator, Microsoft Authenticator, Authy, 1Password and similar apps all work.</p>
+        <div class="mt-3 flex flex-col sm:flex-row gap-4 items-start"><div id="tfa-qr" class="w-[168px] h-[168px] rounded-xl bg-white p-2 grid place-items-center text-xs text-center text-neutral-500 shrink-0">Loading QR…</div>
+        <div class="min-w-0"><div class="text-xs muted">Can't scan? Enter this key manually:</div><div class="type-mono text-sm font-semibold mt-1.5 break-all select-all p-2.5 rounded-lg surface-2" id="tfa-key">${groupKey(_tfa.secret)}</div><div class="flex gap-2 mt-2"><button type="button" class="btn btn-sm btn-outline" onclick="copyText('${_tfa.secret}','Key copied')">Copy key</button><a class="btn btn-sm btn-ghost" href="${uri}">Open in app</a></div></div></div></div></li>
+      <li class="flex gap-3"><div class="guide-num">2</div><form class="flex-1 min-w-0" onsubmit="event.preventDefault();confirmTwoFactorSetup()"><div class="type-small font-semibold">Enter the 6-digit code it shows</div><div class="flex gap-2 mt-2.5"><input id="tfa-code" class="input type-mono text-center text-lg tracking-[0.3em] flex-1" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="000000" required aria-describedby="tfa-err"><button type="submit" class="btn btn-primary">Verify</button></div><div id="tfa-err" class="hidden text-xs mt-2" style="color:#B91C1C" role="alert"></div></form></li>
+    </ol>` });
+  _loadQr().then(ok => {
+    const box = document.getElementById('tfa-qr'); if (!box) return;
+    if (ok && window.QRCode) { box.innerHTML = ''; new QRCode(box, { text: uri, width: 152, height: 152, correctLevel: QRCode.CorrectLevel.M }); }
+    else box.textContent = 'QR unavailable offline. Use the key.';
+  });
+}
+let _qrPromise = null;
+function _loadQr() {
+  if (window.QRCode) return Promise.resolve(true);
+  if (_qrPromise) return _qrPromise;
+  _qrPromise = new Promise(res => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = () => res(true); sc.onerror = () => { _qrPromise = null; res(false); }; document.head.appendChild(sc); });
+  return _qrPromise;
+}
+function copyText(t, msg) { try { navigator.clipboard.writeText(t).then(() => toast(msg || 'Copied'), () => toast('Copy not allowed here', 'error')); } catch (e) { toast('Copy not allowed here', 'error'); } }
+window.copyText = copyText;
+function confirmTwoFactorSetup() {
+  const u = State.user; if (!u || !_tfa.secret) return;
+  if (_tfaLocked()) { _tfaFail('tfa-err'); return; }
+  const st = verifyTotp(_tfa.secret, document.getElementById('tfa-code')?.value);
+  if (!st) { _tfaFail('tfa-err'); return; }
+  const codes = newBackupCodes();
+  updateAccount(u.id, { totpSecret: _tfa.secret, twoFactorEnabled: true, lastTotpStep: st, backupHashes: codes.map(hashBackup) });
+  _tfa.secret = null; _tfa.fails = 0;
+  showBackupCodes(codes, true);
+  render();
+}
+window.confirmTwoFactorSetup = confirmTwoFactorSetup;
+function showBackupCodes(codes, justEnabled) {
+  const txt = 'therabyte backup codes\n' + codes.join('\n') + '\n\nEach code works once.';
+  window._lastBackupText = txt;
+  modal({ title: justEnabled ? 'Two-step verification is on' : 'New backup codes', size: 'sm', body: `
+    <p class="type-small muted leading-relaxed">Save these backup codes somewhere safe. Each one signs you in once if you lose your phone. <span class="font-semibold text-[rgb(var(--fg))]">You won't see them again.</span></p>
+    <div class="grid grid-cols-2 gap-2 mt-4 type-mono text-sm font-semibold">${codes.map(c => `<div class="p-2.5 rounded-lg surface-2 text-center select-all">${c}</div>`).join('')}</div>
+    <div class="flex flex-wrap gap-2 mt-4"><button type="button" class="btn btn-sm btn-outline" onclick="copyText(window._lastBackupText,'Codes copied')">Copy</button><button type="button" class="btn btn-sm btn-outline" onclick="downloadBackupCodes()">Download .txt</button></div>
+    <button type="button" class="btn btn-primary w-full mt-5" onclick="closeModal()">I've saved them</button>` });
+}
+function downloadBackupCodes() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([window._lastBackupText || ''], { type: 'text/plain' })); a.download = 'therabyte-backup-codes.txt'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000); }
+window.downloadBackupCodes = downloadBackupCodes;
+function _askCode(title, intro, onSubmit, cta) {
+  modal({ title, size: 'sm', body: `<form onsubmit="event.preventDefault();${onSubmit}()" class="space-y-4"><p class="type-small muted leading-relaxed">${intro}</p><input id="tfa-code" class="input type-mono text-center text-xl tracking-[0.3em]" autocomplete="one-time-code" maxlength="9" placeholder="000000" required aria-label="Verification code" aria-describedby="tfa-err"><div id="tfa-err" class="hidden text-xs" style="color:#B91C1C" role="alert"></div><button type="submit" class="btn btn-lg btn-primary w-full">${cta}</button></form>` });
+}
+function openTwoFactorDisable() { _askCode('Turn off two-step verification', 'Enter a code from your authenticator app (or a backup code) to confirm.', 'confirmTwoFactorDisable', 'Turn off'); }
+function confirmTwoFactorDisable() {
+  const u = State.user; if (!u) return;
+  if (_tfaLocked()) { _tfaFail('tfa-err'); return; }
+  if (!checkSecondFactor(u, document.getElementById('tfa-code')?.value).ok) { _tfaFail('tfa-err'); return; }
+  updateAccount(u.id, { twoFactorEnabled: false, totpSecret: null, backupHashes: [], lastTotpStep: 0 });
+  _tfa.fails = 0; closeModal(); toast('Two-step verification turned off'); render();
+}
+window.confirmTwoFactorDisable = confirmTwoFactorDisable;
+function regenBackupCodes() { _askCode('New backup codes', 'Enter a code from your authenticator app to make new backup codes. Your old ones will stop working.', 'confirmRegenBackup', 'Continue'); }
+function confirmRegenBackup() {
+  const u = State.user; if (!u) return;
+  if (_tfaLocked()) { _tfaFail('tfa-err'); return; }
+  if (!checkSecondFactor(u, document.getElementById('tfa-code')?.value).ok) { _tfaFail('tfa-err'); return; }
+  const codes = newBackupCodes(); updateAccount(u.id, { backupHashes: codes.map(hashBackup) });
+  _tfa.fails = 0; closeModal(); showBackupCodes(codes, false); render();
+}
+window.regenBackupCodes = regenBackupCodes; window.confirmRegenBackup = confirmRegenBackup;
 function saveProfileField(field, value) { if (!State.user) return; State.user[field] = value; const u = USERS.find(x => x.id === State.user.id); if (u) u[field] = value; saveAll(); persistSession(); toast('Saved'); }
 window.saveProfileField = saveProfileField;
 function setMyPhoto(dataUrl) {
@@ -3258,6 +3615,7 @@ function BookStep1() {
   const cats = [...new Set(services.map(s => s.category))];
   return `<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
     ${BookingHeader(1, 3, 'What kind of session do you need?', 'Base price shown. Focus areas add ₱50 to ₱150 each.')}
+    <a href="#/app/practitioners" class="text-xs font-semibold text-brand-600 hover:underline inline-flex items-center gap-1.5 -mt-2 mb-4">${icon('users', 12)} Browse practitioner profiles</a>
     ${lastAppt ? (() => { const lp = getUser(lastAppt.practitioner); const ls = getService(lastAppt.service); const lastAreas = (lastAppt.areas || []).map(x => getArea(x)?.label).filter(Boolean); return `<div class="card p-4 mb-4 border-l-4 !border-l-brand-500"><div class="flex items-start gap-3 flex-wrap"><div class="w-9 h-9 rounded-lg bg-brand-500/12 text-brand-600 grid place-items-center shrink-0">${icon('history', 15)}</div><div class="flex-1 min-w-0"><div class="type-small font-semibold">Welcome back — continue with ${esc(lp.first)}?</div><div class="text-xs muted mt-1">Last session: ${esc(ls?.name || '')} on ${fmtDate(lastAppt.start, {month:'short', day:'numeric'})}${lastAreas.length ? ' · ' + lastAreas.join(', ') : ''}</div></div><button onclick="quickRebook()" class="btn btn-sm btn-primary">${icon('zap', 12)} Book again</button></div></div>`; })() : ''}
     <div class="grid lg:grid-cols-[1fr_280px] gap-6">
       <div class="space-y-4">
@@ -3722,6 +4080,7 @@ function render() {
       }
       else if (sub[0] === 'settings') page = PageSettings();
       else if (sub[0] === 'book' && u.role === 'client') page = PageBook();
+      else if (sub[0] === 'practitioners') page = sub[1] ? PagePractitionerProfile(sub[1]) : PagePractitioners();
       else if (sub[0] === 'self-care') page = PageGuides(sub[1] || null);
       else page = Page404();
       root.innerHTML = AppShell(page);
@@ -3998,7 +4357,7 @@ console.info('[therabyte] ready. Run __tb_test() to verify core logic. __tb_anal
     clients: 'Clients', services: 'Services', availability: 'Hours',
     reports: 'Reports', verification: 'Verification', invoices: 'Invoices',
     notifications: 'Notifications', messages: 'Messages', settings: 'Settings',
-    book: 'Book a session', 'self-care': 'Self-care'
+    book: 'Book a session', practitioners: 'Practitioners', 'self-care': 'Self-care'
   };
   function applyTitle() {
     var path = (location.hash.replace(/^#\/?/, '').split('?')[0] || '');
